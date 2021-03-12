@@ -1,4 +1,4 @@
-package com.example.reminder;
+package java.com.example.reminder;
 
 import org.junit.Test;
 
