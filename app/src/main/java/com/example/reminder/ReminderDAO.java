@@ -1,13 +1,14 @@
 package com.example.reminder;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ReminderDAO {
-    void save(Reminder reminder);
+    Reminder save(Reminder reminder) throws IOException;
 
-    void update(Reminder reminder);
+    Reminder update(Reminder reminder);
 
-    void delete(Reminder reminder);
+    Reminder delete(Reminder reminder);
 
     List<Reminder> findAll();
 }
