@@ -1,4 +1,4 @@
-package main.java.com.example.reminder;
+package com.example.reminder;
 
 class Reminder {
     int id;

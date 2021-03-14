@@ -18,19 +18,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.reminder_item);
 
-        btn = findViewById(R.id.btn);
-        textView = findViewById(R.id.text_view);
-        editText = findViewById(R.id.edit_text);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = editText.getText().toString();
-                textView.setText("Hello, " + name + "!!!");
-            }
-        });
+//        btn = findViewById(R.id.btn);
+//        textView = findViewById(R.id.text_view);
+//        editText = findViewById(R.id.edit_text);
+//
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String name = editText.getText().toString();
+//                textView.setText("Hello, " + name + "!!!");
+//            }
+//        });
 
 
     }
