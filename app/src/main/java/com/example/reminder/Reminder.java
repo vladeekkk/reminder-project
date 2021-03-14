@@ -22,7 +22,7 @@ public class Reminder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reminder reminder = (Reminder) o;
-        return id == reminder.id;
+        return id == reminder.id && date.equals(reminder.date) && comment.equals(reminder.comment);
     }
 
     @Override

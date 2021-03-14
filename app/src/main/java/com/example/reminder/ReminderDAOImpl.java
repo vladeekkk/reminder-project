@@ -16,17 +16,20 @@ public class ReminderDAOImpl implements ReminderDAO {
      * if reminder with input reminder id exists, then nothing is changes
      */
     @Override
-    public boolean save(Reminder reminder) {
+    public Reminder save(Reminder reminder) {
         List<Reminder> currentReminders = findAll();
         if (currentReminders == null) {
-            return false; //some error
+            return null; //some error
         }
 
         if (currentReminders.contains(reminder)) {
-            return false; //already exist reminder with input reminder id
+            return null; //already exist reminder with input reminder id
         }
         currentReminders.add(reminder);
-        return saveListReminders(currentReminders);
+        if (saveListReminders(currentReminders)) {
+            return reminder;
+        }
+        return null;
     }
 
     /*
@@ -34,18 +37,21 @@ public class ReminderDAOImpl implements ReminderDAO {
      * if reminder with input reminder id does not exist, then nothing is changes
      */
     @Override
-    public boolean update(Reminder reminder) {
+    public Reminder update(Reminder reminder) {
         List<Reminder> currentReminders = findAll();
         if (currentReminders == null) {
-            return false; //some error
+            return null; //some error
         }
 
         if (!currentReminders.contains(reminder)) {
-            return false; //does not exist reminder with input reminder id
+            return null; //does not exist reminder with input reminder id
         }
         currentReminders.remove(reminder);
         currentReminders.add(reminder);
-        return saveListReminders(currentReminders);
+        if (saveListReminders(currentReminders)) {
+            return reminder;
+        }
+        return null;
     }
 
     /*
@@ -53,22 +59,27 @@ public class ReminderDAOImpl implements ReminderDAO {
      * if reminder with input reminder id does not exist, then nothing is changes
      */
     @Override
-    public boolean delete(Reminder reminder) {
+    public Reminder delete(Reminder reminder) {
         List<Reminder> currentReminders = findAll();
         if (currentReminders == null) {
-            return false; //some error
+            return null; //some error
         }
 
-        if (!currentReminders.contains(reminder)) {
-            return false; //does not exist reminder with input reminder id
+        for (Reminder item : currentReminders) {
+            if (item.id == reminder.id) {
+                currentReminders.remove(item);
+            }
         }
-        currentReminders.remove(reminder);
-        return saveListReminders(currentReminders);
+
+        if (saveListReminders(currentReminders)) {
+            return reminder;
+        }
+        return null;
     }
 
     /*
      * Return list of all reminders
-     * ot empty list if the file is empty
+     * or empty list if the file is empty
      */
     @Override
     public List<Reminder> findAll() {
