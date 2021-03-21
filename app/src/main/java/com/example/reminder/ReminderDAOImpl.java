@@ -1,5 +1,7 @@
 package com.example.reminder;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -10,6 +12,11 @@ import java.util.List;
 
 public class ReminderDAOImpl implements ReminderDAO {
     String dataBase = "DataBase.json";
+    Context context;
+
+    ReminderDAOImpl(Context context) {
+        this.context = context;
+    }
 
     /*
      * Add new reminder
@@ -83,7 +90,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public List<Reminder> findAll() {
-        try (Reader reader = new FileReader(dataBase)) {
+        try (Reader reader = new InputStreamReader(context.getAssets().open(dataBase))) {
             if (!reader.ready()) {
                 return new LinkedList<>(); //empty file
             } else {

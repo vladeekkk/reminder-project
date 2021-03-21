@@ -25,4 +25,11 @@
         android:text="01.01.2001"
         android:textSize="12sp"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show all Reminders"
+        android:id="@+id/all_reminders">
+    </Button>
 </LinearLayout>

@@ -32,4 +32,13 @@ public class Reminder {
         }
         return Arrays.hashCode(new int[]{Arrays.hashCode(new String[]{date, comment}), id});
     }
+
+    @Override
+    public String toString() {
+        return "Reminder{" +
+                "id=" + id +
+                ", date='" + date + '\'' +
+                ", comment='" + comment + '\'' +
+                '}';
+    }
 }
