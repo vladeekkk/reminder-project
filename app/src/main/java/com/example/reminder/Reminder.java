@@ -35,10 +35,11 @@ public class Reminder {
 
     @Override
     public String toString() {
-        return "Reminder{" +
-                "id=" + id +
-                ", date='" + date + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
+        return comment + '\n' + date;
+//        return "Reminder{" +
+//                "id=" + id +
+//                ", date='" + date + '\'' +
+//                ", comment='" + comment + '\'' +
+//                '}';
     }
 }
