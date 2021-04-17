@@ -9,7 +9,7 @@ import android.widget.ListView;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class WindowOfAllReminders extends AppCompatActivity {
+public class AllRemindersView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

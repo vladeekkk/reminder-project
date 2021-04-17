@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.all_reminders:
-                Intent intent = new Intent(this, WindowOfAllReminders.class);
+                Intent intent = new Intent(this, AllRemindersView.class);
                 startActivity(intent);
                 break;
             default:
