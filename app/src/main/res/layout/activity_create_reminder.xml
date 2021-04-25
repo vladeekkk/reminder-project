@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CreateReminderActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter reminder info:" />
+
+    <EditText
+        android:id="@+id/reminder_info_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="reminder info" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select reminder date:" />
+
+    <EditText
+        android:id="@+id/reminder_date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="01.01.2001" />
+
+    <Button
+        android:id="@+id/open_calendar_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open calendar"
+        />
+
+    <Button
+        android:id="@+id/save_remider_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save reminder"
+        />
+
+</LinearLayout>
