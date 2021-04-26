@@ -10,11 +10,15 @@ public class Reminder {
     int id;
     String date;
     String comment;
+    long hour;
+    long minute;
 
-    public Reminder(int id, String date, String comment) {
+    public Reminder(int id, String date, String comment, long hour, long minute) {
         this.id = id;
         this.date = date;
         this.comment = comment;
+        this.hour = hour;
+        this.minute = minute;
     }
 
     @Override
