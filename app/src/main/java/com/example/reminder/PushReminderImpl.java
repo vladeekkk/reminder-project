@@ -33,8 +33,8 @@ public class PushReminderImpl implements PushReminder {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_baseline_warning_24)
-                .setContentTitle("New Reminder, date is " + reminder.date)
-                .setContentText(reminder.comment)
+                .setContentTitle("New Reminder, date is " + reminder.getDate())
+                .setContentText(reminder.getComment())
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent);

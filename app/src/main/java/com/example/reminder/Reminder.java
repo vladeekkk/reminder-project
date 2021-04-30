@@ -1,17 +1,35 @@
 package com.example.reminder;
 
-
 import android.os.Build;
-
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Reminder {
-    int id;
-    String date;
-    String comment;
-    long hour;
-    long minute;
+    private final int id;
+    private final String date;
+    private final String comment;
+    private long hour;
+    private long minute;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+  
+    public long getMinute() {
+        return id;
+    }
+  
+    public int getHour() {
+        return id;
+    }
 
     public Reminder(int id, String date, String comment, long hour, long minute) {
         this.id = id;

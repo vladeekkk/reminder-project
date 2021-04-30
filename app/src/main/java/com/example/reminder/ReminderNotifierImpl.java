@@ -37,8 +37,8 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
 
         queue = reminders.stream().
                 sorted((o1, o2) -> {
-                    long delta1 = (o1.hour * INTERVAL_HOUR + o1.minute) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
-                    long delta2 = (o2.hour * INTERVAL_HOUR + o2.minute) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
+                    long delta1 = (o1.getHour() * INTERVAL_HOUR + o1.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
+                    long delta2 = (o2.getHour() * INTERVAL_HOUR + o2.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
 
                     delta1 = (delta1 + INTERVAL_DAY) % INTERVAL_DAY;
                     delta2 = (delta2 + INTERVAL_DAY) % INTERVAL_DAY;
@@ -52,7 +52,7 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             Intent intent = new Intent(context, ReminderNotifierImpl.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, intent, 0);
 
-            long timeNotification = reminder.hour * INTERVAL_HOUR + reminder.minute;
+            long timeNotification = reminder.getHour() * INTERVAL_HOUR + reminder.getMinute();
             long delta = (INTERVAL_DAY + timeNotification * INTERVAL_MINUTE * INTERVAL_SECOND - realTime) % INTERVAL_DAY;
 
             alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta, pendingIntent);
