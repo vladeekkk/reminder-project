@@ -8,6 +8,8 @@ public class Reminder {
     private final int id;
     private final String date;
     private final String comment;
+    private long hour;
+    private long minute;
 
     public int getId() {
         return id;
@@ -20,11 +22,21 @@ public class Reminder {
     public String getComment() {
         return comment;
     }
+  
+    public long getMinute() {
+        return id;
+    }
+  
+    public int getHour() {
+        return id;
+    }
 
-    public Reminder(int id, String date, String comment) {
+    public Reminder(int id, String date, String comment, long hour, long minute) {
         this.id = id;
         this.date = date;
         this.comment = comment;
+        this.hour = hour;
+        this.minute = minute;
     }
 
     @Override
@@ -43,4 +55,13 @@ public class Reminder {
         return Arrays.hashCode(new int[]{Arrays.hashCode(new String[]{date, comment}), id});
     }
 
+    @Override
+    public String toString() {
+        return comment + '\n' + date;
+//        return "Reminder{" +
+//                "id=" + id +
+//                ", date='" + date + '\'' +
+//                ", comment='" + comment + '\'' +
+//                '}';
+    }
 }
