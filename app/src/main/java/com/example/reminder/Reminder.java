@@ -22,11 +22,11 @@ public class Reminder {
     public String getComment() {
         return comment;
     }
-
+  
     public long getMinute() {
         return id;
     }
-
+  
     public int getHour() {
         return id;
     }

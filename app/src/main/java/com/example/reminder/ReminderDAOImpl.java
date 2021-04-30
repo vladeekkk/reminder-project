@@ -1,5 +1,7 @@
 package com.example.reminder;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -15,9 +17,14 @@ import java.util.List;
 public class ReminderDAOImpl implements ReminderDAO {
     String dataBase = "jdbc:sqlite:identifier.sqlite";
     Connection connection;
+    Context context = null;
 
     public ReminderDAOImpl() {
         this.connection = this.connect();
+    }
+    public ReminderDAOImpl(Context context) {
+        new ReminderDAOImpl();
+        this.context = context;
     }
 
     /*
