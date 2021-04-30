@@ -4,12 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.sql.*;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class ReminderDAOImpl implements ReminderDAO {
-    String dataBase = "DataBase.json";
+    String dataBase = "jdbc:sqlite:identifier.sqlite";
+    Connection connection;
+
+    public ReminderDAOImpl() {
+        this.connection = this.connect();
+    }
 
     /*
      * Add new reminder
@@ -17,41 +26,16 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder save(Reminder reminder) {
-        List<Reminder> currentReminders = findAll();
-        if (currentReminders == null) {
-            return null; //some error
-        }
-
-        if (currentReminders.contains(reminder)) {
-            return null; //already exist reminder with input reminder id
-        }
-        currentReminders.add(reminder);
-        if (saveListReminders(currentReminders)) {
-            return reminder;
-        }
-        return null;
+        return updateData(reminder, "INSERT OR IGNORE INTO data_base(id, date, comment) VALUES(?,?,?)");
     }
 
     /*
      * Change some reminder
-     * if reminder with input reminder id does not exist, then nothing is changes
+     * if reminder with input reminder id does not exist, then dataBase add it
      */
     @Override
     public Reminder update(Reminder reminder) {
-        List<Reminder> currentReminders = findAll();
-        if (currentReminders == null) {
-            return null; //some error
-        }
-
-        if (!currentReminders.contains(reminder)) {
-            return null; //does not exist reminder with input reminder id
-        }
-        currentReminders.remove(reminder);
-        currentReminders.add(reminder);
-        if (saveListReminders(currentReminders)) {
-            return reminder;
-        }
-        return null;
+        return updateData(reminder, "REPLACE INTO data_base(id, date, comment) VALUES (?, ?, ?)");
     }
 
     /*
@@ -60,21 +44,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder delete(Reminder reminder) {
-        List<Reminder> currentReminders = findAll();
-        if (currentReminders == null) {
-            return null; //some error
-        }
-
-        for (Reminder item : currentReminders) {
-            if (item.id == reminder.id) {
-                currentReminders.remove(item);
-            }
-        }
-
-        if (saveListReminders(currentReminders)) {
-            return reminder;
-        }
-        return null;
+        return updateData(reminder, "DELETE FROM data_base WHERE id = ?");
     }
 
     /*
@@ -83,25 +53,45 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public List<Reminder> findAll() {
-        try (Reader reader = new FileReader(dataBase)) {
-            if (!reader.ready()) {
-                return new LinkedList<>(); //empty file
-            } else {
-                return new Gson().fromJson(reader, new TypeToken<List<Reminder>>() {
-                }.getType());
+        List<Reminder> reminders = new ArrayList<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT id, date, comment FROM data_base")) {
+            while (rs.next()) {
+                reminders.add(new Reminder(rs.getInt("id"),
+                        rs.getString("date"),
+                        rs.getString("comment")));
             }
-        } catch (IOException e) {
-            return null;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
+        return reminders;
     }
 
-    private boolean saveListReminders(List<Reminder> currentReminders) {
-        try (Writer writer = new FileWriter(dataBase)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(currentReminders, writer);
-        } catch (IOException e) {
-            return false;
+    private Connection connect() {
+        try {
+            connection = DriverManager.getConnection(dataBase);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
-        return true;
+        return connection;
+    }
+
+    private Reminder updateData(Reminder reminder, String sql) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            int countParameter = pstmt.getParameterMetaData().getParameterCount();
+            if (countParameter > 0) {
+                pstmt.setInt(1, reminder.getId());
+            }
+            if (countParameter > 1) {
+                pstmt.setString(2, reminder.getDate());
+            }
+            if (countParameter > 2) {
+                pstmt.setString(3, reminder.getComment());
+            }
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return reminder;
     }
 }

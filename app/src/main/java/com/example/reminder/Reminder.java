@@ -1,15 +1,25 @@
 package com.example.reminder;
 
-
 import android.os.Build;
-
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Reminder {
-    int id;
-    String date;
-    String comment;
+    private final int id;
+    private final String date;
+    private final String comment;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getComment() {
+        return comment;
+    }
 
     public Reminder(int id, String date, String comment) {
         this.id = id;
@@ -32,4 +42,5 @@ public class Reminder {
         }
         return Arrays.hashCode(new int[]{Arrays.hashCode(new String[]{date, comment}), id});
     }
+
 }
