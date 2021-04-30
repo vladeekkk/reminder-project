@@ -26,7 +26,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder save(Reminder reminder) {
-        return updateData(reminder, "INSERT OR IGNORE INTO data_base(id, date, comment) VALUES(?,?,?)");
+        return updateData(reminder, "INSERT OR IGNORE INTO data_base(id, date, comment, hour, minute) VALUES(?, ?, ?, ?, ?)");
     }
 
     /*
@@ -35,7 +35,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder update(Reminder reminder) {
-        return updateData(reminder, "REPLACE INTO data_base(id, date, comment) VALUES (?, ?, ?)");
+        return updateData(reminder, "REPLACE INTO data_base(id, date, comment, hour, minute) VALUES (?, ?, ?, ?, ?)");
     }
 
     /*
@@ -55,11 +55,13 @@ public class ReminderDAOImpl implements ReminderDAO {
     public List<Reminder> findAll() {
         List<Reminder> reminders = new ArrayList<>();
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT id, date, comment FROM data_base")) {
+             ResultSet rs = stmt.executeQuery("SELECT id, date, comment, hour, minute FROM data_base")) {
             while (rs.next()) {
                 reminders.add(new Reminder(rs.getInt("id"),
                         rs.getString("date"),
-                        rs.getString("comment")));
+                        rs.getString("comment"),
+                        rs.getLong("hour"),
+                        rs.getLong("minute")));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -87,6 +89,12 @@ public class ReminderDAOImpl implements ReminderDAO {
             }
             if (countParameter > 2) {
                 pstmt.setString(3, reminder.getComment());
+            }
+            if (countParameter > 3) {
+                pstmt.setLong(4, reminder.getHour());
+            }
+            if (countParameter > 4) {
+                pstmt.setLong(5, reminder.getMinute());
             }
             pstmt.executeUpdate();
         } catch (SQLException e) {

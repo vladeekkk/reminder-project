@@ -2,6 +2,7 @@ package com.example.reminder.test;
 
 import com.example.reminder.Reminder;
 import com.example.reminder.ReminderDAOImpl;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class ReminderDAOImplTest {
     }
 
     @Before
+    @After
     public void delete() {
         String sql = "DELETE FROM data_base";
         try (Connection conn = this.connect();
@@ -42,18 +44,18 @@ public class ReminderDAOImplTest {
     @Test
     public void testSave() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(1, "01.02.03", "test1"));
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(3, "07.08.09", "test3"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
-        check.add(new Reminder(5, "13.14.15", "test5"));
+        check.add(new Reminder(1, "01.02.03", "test1", 0, 0));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(3, "07.08.09", "test3", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
+        check.add(new Reminder(5, "13.14.15", "test5", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -61,24 +63,24 @@ public class ReminderDAOImplTest {
     @Test
     public void testSaveWithDuplicate() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(1, "01.02.03", "test1"));
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(3, "07.08.09", "test3"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
-        check.add(new Reminder(5, "13.14.15", "test5"));
+        check.add(new Reminder(1, "01.02.03", "test1", 0, 0));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(3, "07.08.09", "test3", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
+        check.add(new Reminder(5, "13.14.15", "test5", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -86,24 +88,24 @@ public class ReminderDAOImplTest {
     @Test
     public void testUpdate() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1BeforeUpdate"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2BeforeUpdate"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3BeforeUpdate"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4BeforeUpdate"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5BeforeUpdate"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1BeforeUpdate", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2BeforeUpdate", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3BeforeUpdate", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4BeforeUpdate", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5BeforeUpdate", 0, 0));
 
-        dataBase.update(new Reminder(1, "01.02.03", "test1"));
-        dataBase.update(new Reminder(2, "04.05.05", "test2"));
-        dataBase.update(new Reminder(3, "07.08.09", "test3"));
-        dataBase.update(new Reminder(4, "10.11.12", "test4"));
-        dataBase.update(new Reminder(5, "13.14.15", "test5"));
+        dataBase.update(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.update(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.update(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.update(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.update(new Reminder(5, "13.14.15", "test5", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(1, "01.02.03", "test1"));
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(3, "07.08.09", "test3"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
-        check.add(new Reminder(5, "13.14.15", "test5"));
+        check.add(new Reminder(1, "01.02.03", "test1", 0, 0));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(3, "07.08.09", "test3", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
+        check.add(new Reminder(5, "13.14.15", "test5", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -111,29 +113,29 @@ public class ReminderDAOImplTest {
     @Test
     public void testUpdateNotExist() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
-        dataBase.update(new Reminder(6, "01.02.03", "test6"));
-        dataBase.update(new Reminder(7, "04.05.05", "test7"));
-        dataBase.update(new Reminder(8, "07.08.09", "test8"));
-        dataBase.update(new Reminder(9, "10.11.12", "test9"));
-        dataBase.update(new Reminder(10, "13.14.15", "test10"));
+        dataBase.update(new Reminder(6, "01.02.03", "test6", 0, 0));
+        dataBase.update(new Reminder(7, "04.05.05", "test7", 0, 0));
+        dataBase.update(new Reminder(8, "07.08.09", "test8", 0, 0));
+        dataBase.update(new Reminder(9, "10.11.12", "test9", 0, 0));
+        dataBase.update(new Reminder(10, "13.14.15", "test10", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(1, "01.02.03", "test1"));
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(3, "07.08.09", "test3"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
-        check.add(new Reminder(5, "13.14.15", "test5"));
-        check.add(new Reminder(6, "01.02.03", "test6"));
-        check.add(new Reminder(7, "04.05.05", "test7"));
-        check.add(new Reminder(8, "07.08.09", "test8"));
-        check.add(new Reminder(9, "10.11.12", "test9"));
-        check.add(new Reminder(10, "13.14.15", "test10"));
+        check.add(new Reminder(1, "01.02.03", "test1", 0, 0));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(3, "07.08.09", "test3", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
+        check.add(new Reminder(5, "13.14.15", "test5", 0, 0));
+        check.add(new Reminder(6, "01.02.03", "test6", 0, 0));
+        check.add(new Reminder(7, "04.05.05", "test7", 0, 0));
+        check.add(new Reminder(8, "07.08.09", "test8", 0, 0));
+        check.add(new Reminder(9, "10.11.12", "test9", 0, 0));
+        check.add(new Reminder(10, "13.14.15", "test10", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -141,19 +143,19 @@ public class ReminderDAOImplTest {
     @Test
     public void testDelete() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
-        dataBase.delete(new Reminder(1, "01.02.03", "test1"));
-        dataBase.delete(new Reminder(3, "07.08.09", "test3"));
-        dataBase.delete(new Reminder(5, "13.14.15", "test5"));
+        dataBase.delete(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.delete(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.delete(new Reminder(5, "13.14.15", "test5", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -161,22 +163,22 @@ public class ReminderDAOImplTest {
     @Test
     public void testDeleteNotExist() {
         ReminderDAOImpl dataBase = new ReminderDAOImpl();
-        dataBase.save(new Reminder(1, "01.02.03", "test1"));
-        dataBase.save(new Reminder(2, "04.05.05", "test2"));
-        dataBase.save(new Reminder(3, "07.08.09", "test3"));
-        dataBase.save(new Reminder(4, "10.11.12", "test4"));
-        dataBase.save(new Reminder(5, "13.14.15", "test5"));
+        dataBase.save(new Reminder(1, "01.02.03", "test1", 0, 0));
+        dataBase.save(new Reminder(2, "04.05.05", "test2", 0, 0));
+        dataBase.save(new Reminder(3, "07.08.09", "test3", 0, 0));
+        dataBase.save(new Reminder(4, "10.11.12", "test4", 0, 0));
+        dataBase.save(new Reminder(5, "13.14.15", "test5", 0, 0));
 
-        dataBase.delete(new Reminder(6, "01.02.03", "test1"));
-        dataBase.delete(new Reminder(7, "07.08.09", "test3"));
-        dataBase.delete(new Reminder(8, "13.14.15", "test5"));
+        dataBase.delete(new Reminder(6, "01.02.03", "test1", 0, 0));
+        dataBase.delete(new Reminder(7, "07.08.09", "test3", 0, 0));
+        dataBase.delete(new Reminder(8, "13.14.15", "test5", 0, 0));
 
         ArrayList<Reminder> check = new ArrayList<>();
-        check.add(new Reminder(1, "01.02.03", "test1"));
-        check.add(new Reminder(2, "04.05.05", "test2"));
-        check.add(new Reminder(3, "07.08.09", "test3"));
-        check.add(new Reminder(4, "10.11.12", "test4"));
-        check.add(new Reminder(5, "13.14.15", "test5"));
+        check.add(new Reminder(1, "01.02.03", "test1", 0, 0));
+        check.add(new Reminder(2, "04.05.05", "test2", 0, 0));
+        check.add(new Reminder(3, "07.08.09", "test3", 0, 0));
+        check.add(new Reminder(4, "10.11.12", "test4", 0, 0));
+        check.add(new Reminder(5, "13.14.15", "test5", 0, 0));
         List<Reminder> check2 = dataBase.findAll();
         Assert.assertEquals(check, check2);
     }
@@ -202,11 +204,11 @@ public class ReminderDAOImplTest {
             }
             int command = rand.nextInt(14);
             if (command == 0) {
-                dataBase.save(new Reminder(idTest, dateTest, commentTest.toString()));
-                check.add(new Reminder(idTest, dateTest, commentTest.toString()));
+                dataBase.save(new Reminder(idTest, dateTest, commentTest.toString(), 0, 0));
+                check.add(new Reminder(idTest, dateTest, commentTest.toString(), 0, 0));
             } else if (command == 1) {
-                dataBase.delete(new Reminder(idTest, dateTest, commentTest.toString()));
-                check.remove(new Reminder(idTest, dateTest, commentTest.toString()));
+                dataBase.delete(new Reminder(idTest, dateTest, commentTest.toString(), 0, 0));
+                check.remove(new Reminder(idTest, dateTest, commentTest.toString(), 0, 0));
             } else if (command == 3) {
                 List<Reminder> checkData = dataBase.findAll();
                 Assert.assertEquals(check, checkData);
