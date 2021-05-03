@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btn;
-    private TextView textView;
-    private EditText editText;
+  
+    private Button addNewReminderBtn;
+    private Button showReminders;
 
     ReminderNotifierImpl reminderNotifier;
 
@@ -56,19 +56,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder_item);
 
-        Button showReminders = findViewById(R.id.all_reminders);
+        addNewReminderBtn = findViewById(R.id.new_reminder_btn);
+        showReminders = findViewById(R.id.all_reminders);
+
         showReminders.setOnClickListener(this);
+        addNewReminderBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.all_reminders:
-                Intent intent = new Intent(this, AllRemindersView.class);
+                intent = new Intent(this, AllRemindersView.class);
+                startActivity(intent);
+                break;
+            case R.id.new_reminder_btn:
+                intent = new Intent(this, CreateReminderActivity.class);
                 startActivity(intent);
                 break;
             default:
                 break;
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // examle of pushing a notification
+        PushReminderImpl reminderPusher = new PushReminderImpl(this);
+        reminderPusher.push(new Reminder(0, "03.11.2001", "homework"));
+    }
+
 }
