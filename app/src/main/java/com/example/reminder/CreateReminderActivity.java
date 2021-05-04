@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
@@ -15,10 +16,12 @@ public class CreateReminderActivity extends AppCompatActivity {
     private EditText reminderDate;
     private Button saveReminderBtn;
 
-    private final int reminderId = 40; // TODO
+    private int reminderId = 40; // TODO
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Random rand = new Random();
+        rand.setSeed(239);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_reminder);
 
@@ -29,13 +32,13 @@ public class CreateReminderActivity extends AppCompatActivity {
         saveReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                reminderId = rand.nextInt();
                 ReminderServiceImpl reminderService
                         = new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext()));
                 try {
                     reminderService.save(new Reminder(reminderId,
                             remiderInfo.getText().toString(),
-                            reminderDate.getText().toString()));
+                            reminderDate.getText().toString(),1,1));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
