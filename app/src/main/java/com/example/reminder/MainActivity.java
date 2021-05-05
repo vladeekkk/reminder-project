@@ -20,6 +20,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   
     private Button addNewReminderBtn;
     private Button showReminders;
+
 
     ReminderNotifierImpl reminderNotifier;
 
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.reminder_item);
 
         addNewReminderBtn = findViewById(R.id.new_reminder_btn);
@@ -85,7 +93,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         // examle of pushing a notification
         PushReminderImpl reminderPusher = new PushReminderImpl(this);
-        reminderPusher.push(new Reminder(0, "03.11.2001", "homework"));
+        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.reminder;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ReminderServiceImpl implements ReminderService{
     private final ReminderDAO reminderDAO;
@@ -22,5 +23,10 @@ public class ReminderServiceImpl implements ReminderService{
     @Override
     public Reminder delete(Reminder reminder) {
         return reminderDAO.delete(reminder);
+    }
+
+    @Override
+    public List<Reminder> findAll() {
+        return reminderDAO.findAll();
     }
 }

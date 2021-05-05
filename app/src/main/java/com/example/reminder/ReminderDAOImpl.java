@@ -1,7 +1,12 @@
 package com.example.reminder;
 
+import android.content.ContentValues;
 import android.content.Context;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.provider.BaseColumns;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -15,16 +20,12 @@ import java.util.List;
 
 
 public class ReminderDAOImpl implements ReminderDAO {
-    String dataBase = "jdbc:sqlite:identifier.sqlite";
-    Connection connection;
-    Context context = null;
+    SQLiteDatabase read;
+    SQLiteDatabase write;
 
-    public ReminderDAOImpl() {
-        this.connection = this.connect();
-    }
     public ReminderDAOImpl(Context context) {
-        new ReminderDAOImpl();
-        this.context = context;
+        read = FeedReaderDbHelper.getInstance(context).getReadableDatabase();
+        write = FeedReaderDbHelper.getInstance(context).getWritableDatabase();
     }
 
     /*
@@ -33,7 +34,24 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder save(Reminder reminder) {
-        return updateData(reminder, "INSERT OR IGNORE INTO data_base(id, date, comment, hour, minute) VALUES(?, ?, ?, ?, ?)");
+        String sql = "INSERT OR IGNORE INTO reminder_database(id, date, comment, hour, minute) VALUES(?, ?, ?, ?, ?)";
+        SQLiteStatement statement = write.compileStatement(sql);
+        statement.bindLong(1, reminder.getId());
+        statement.bindString(2, reminder.getDate());
+        statement.bindString(3, reminder.getComment());
+        statement.bindLong(4, reminder.getHour());
+        statement.bindLong(5, reminder.getMinute());
+        statement.executeInsert();
+
+//        ContentValues values = new ContentValues();
+//        values.put(FeedReaderContract.FeedEntry.ID, reminder.getId());
+//        values.put(FeedReaderContract.FeedEntry.DATE, reminder.getDate());
+//        values.put(FeedReaderContract.FeedEntry.COMMENT, reminder.getComment());
+//        values.put(FeedReaderContract.FeedEntry.HOUR, reminder.getHour());
+//        values.put(FeedReaderContract.FeedEntry.MINUTE, reminder.getMinute());
+//        long newRowId = write.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
+//        System.out.println(reminder.getId());
+        return reminder;
     }
 
     /*
@@ -42,7 +60,15 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder update(Reminder reminder) {
-        return updateData(reminder, "REPLACE INTO data_base(id, date, comment, hour, minute) VALUES (?, ?, ?, ?, ?)");
+        String sql = "REPLACE INTO reminder_database(id, date, comment, hour, minute) VALUES (?, ?, ?, ?, ?)";
+        SQLiteStatement statement = write.compileStatement(sql);
+        statement.bindLong(1, reminder.getId());
+        statement.bindString(2, reminder.getDate());
+        statement.bindString(3, reminder.getComment());
+        statement.bindLong(4, reminder.getHour());
+        statement.bindLong(5, reminder.getMinute());
+        statement.executeUpdateDelete();
+        return reminder;
     }
 
     /*
@@ -51,7 +77,11 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder delete(Reminder reminder) {
-        return updateData(reminder, "DELETE FROM data_base WHERE id = ?");
+        String sql = "DELETE FROM reminder_database WHERE id = ?";
+        SQLiteStatement statement = write.compileStatement(sql);
+        statement.bindLong(1, reminder.getId());
+        statement.executeUpdateDelete();
+        return reminder;
     }
 
     /*
@@ -60,53 +90,24 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public List<Reminder> findAll() {
+        String[] projection = {
+                FeedReaderContract.FeedEntry.ID,
+                FeedReaderContract.FeedEntry.DATE,
+                FeedReaderContract.FeedEntry.COMMENT,
+                FeedReaderContract.FeedEntry.HOUR,
+                FeedReaderContract.FeedEntry.MINUTE
+        };
+        Cursor cursor = read.query(FeedReaderContract.FeedEntry.TABLE_NAME, projection, null, null, null, null, null);
         List<Reminder> reminders = new ArrayList<>();
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT id, date, comment, hour, minute FROM data_base")) {
-            while (rs.next()) {
-                reminders.add(new Reminder(rs.getInt("id"),
-                        rs.getString("date"),
-                        rs.getString("comment"),
-                        rs.getLong("hour"),
-                        rs.getLong("minute")));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.ID));
+            String date = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.DATE));
+            String comment = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.COMMENT));
+            long hour = cursor.getLong(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.HOUR));
+            long minute = cursor.getLong(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.MINUTE));
+            reminders.add(new Reminder(id, date, comment, hour, minute));
         }
+        cursor.close();
         return reminders;
-    }
-
-    private Connection connect() {
-        try {
-            connection = DriverManager.getConnection(dataBase);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
-
-    private Reminder updateData(Reminder reminder, String sql) {
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            int countParameter = pstmt.getParameterMetaData().getParameterCount();
-            if (countParameter > 0) {
-                pstmt.setInt(1, reminder.getId());
-            }
-            if (countParameter > 1) {
-                pstmt.setString(2, reminder.getDate());
-            }
-            if (countParameter > 2) {
-                pstmt.setString(3, reminder.getComment());
-            }
-            if (countParameter > 3) {
-                pstmt.setLong(4, reminder.getHour());
-            }
-            if (countParameter > 4) {
-                pstmt.setLong(5, reminder.getMinute());
-            }
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return reminder;
     }
 }
