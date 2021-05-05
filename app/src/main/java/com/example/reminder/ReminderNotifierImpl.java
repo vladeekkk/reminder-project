@@ -52,10 +52,15 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             Intent intent = new Intent(context, ReminderNotifierImpl.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, intent, 0);
 
-            long timeNotification = reminder.getHour() * INTERVAL_HOUR + reminder.getMinute();
-            long delta = (INTERVAL_DAY + timeNotification * INTERVAL_MINUTE * INTERVAL_SECOND - realTime) % INTERVAL_DAY;
+            // after ten and twenty second app will send notification
+            // but it doesn't work in background mode
+            // and I don't know why
+            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + (i + 1) * 10000, pendingIntent);
 
-            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta, pendingIntent);
+//            long timeNotification = reminder.getHour() * INTERVAL_HOUR + reminder.getMinute();
+//            long delta = (INTERVAL_DAY + timeNotification * INTERVAL_MINUTE * INTERVAL_SECOND - realTime) % INTERVAL_DAY;
+//
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta, pendingIntent);
         }
         return true;
     }

@@ -92,10 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         // examle of pushing a notification
-        PushReminderImpl reminderPusher = new PushReminderImpl(this);
-        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
+//        PushReminderImpl reminderPusher = new PushReminderImpl(this);
+//        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
     }
-
-
-
 }
