@@ -2,43 +2,41 @@ package com.example.reminder;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AllRemindersView extends AppCompatActivity {
-    private EditText reminderInfo;
-    private EditText reminderDate;
-    private Button saveReminderBtn;
-    private int reminderId;
     private ReminderServiceImpl reminderService;
+    public final static int REQUEST_CODE = 1;
+    ArrayAdapter<String> adapter;
+    ListView itemListView;
+    ArrayAdapter<String> adapterAllInformation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window_of_all_reminders);
-        reminderService = new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext()));
+        SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
+        reminderService = SingletonDataBaseService.getInstance().getDB();
 
         List<String> listOfReminders = reminderService.findAll().stream().map(Object::toString).collect(Collectors.toList());
         List<String> listOfRemindersAllInformation = reminderService.findAll().stream().map(Reminder::getAllInformation).collect(Collectors.toList());
 
-        ListView itemListView
-                = (ListView) findViewById(R.id.list);
+        itemListView = (ListView) findViewById(R.id.list);
 
-        ArrayAdapter<String> adapter
-                = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 listOfReminders);
 
-        ArrayAdapter<String> adapterAllInformation
-                = new ArrayAdapter<String>(
+        adapterAllInformation = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 listOfRemindersAllInformation);
@@ -69,27 +67,23 @@ public class AllRemindersView extends AppCompatActivity {
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
-                                           long id) {
-                setContentView(R.layout.activity_create_reminder);
-                Reminder clickedReminder = new Reminder(adapterAllInformation.getItem(position));
-
-                reminderInfo = findViewById(R.id.reminder_info_text);
-                reminderDate = findViewById(R.id.reminder_date_text);
-                saveReminderBtn = findViewById(R.id.save_remider_btn);
-
-                reminderInfo.setText(clickedReminder.getComment(), TextView.BufferType.EDITABLE);
-                reminderDate.setText(clickedReminder.getDate(), TextView.BufferType.EDITABLE);
-
-                saveReminderBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        reminderService.update(new Reminder(clickedReminder.getId(),
-                                reminderInfo.getText().toString(),
-                                reminderDate.getText().toString(),1,1));
-                        onBackPressed();
-                    }
-                });
+                                    long id) {
+                Intent intent = new Intent(AllRemindersView.this, ReminderUpdater.class);
+                intent.putExtra("clickedReminder", adapterAllInformation.getItem(position));
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        adapter.clear();
+        adapter.addAll(reminderService.findAll().stream().map(Object::toString).collect(Collectors.toList()));
+        adapter.notifyDataSetChanged();
+
+        adapterAllInformation.clear();
+        adapterAllInformation.addAll(reminderService.findAll().stream().map(Reminder::getAllInformation).collect(Collectors.toList()));
+        adapterAllInformation.notifyDataSetChanged();
     }
 }
