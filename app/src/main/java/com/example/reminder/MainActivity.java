@@ -30,9 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-  
+
     private Button addNewReminderBtn;
     private Button showReminders;
+    private ReminderServiceImpl reminderService;
 
 
     ReminderNotifierImpl reminderNotifier;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+        reminderService = SingletonDataBaseService.getInstance().getDB();
         reminderNotifier = new ReminderNotifierImpl();
         List<Reminder> list = new ArrayList<>();
 
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         reminderNotifier.init(list, this);
     }
-  
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -93,9 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         // examle of pushing a notification
         PushReminderImpl reminderPusher = new PushReminderImpl(this);
-        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
+        reminderPusher.push(new Reminder(0, "03.11.2001", "homework", 1, 1));
     }
-
 
 
 }
