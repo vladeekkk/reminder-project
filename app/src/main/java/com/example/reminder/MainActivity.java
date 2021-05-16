@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-  
     private Button addNewReminderBtn;
     private Button showReminders;
 
