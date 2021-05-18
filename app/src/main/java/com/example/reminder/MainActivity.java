@@ -33,33 +33,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button addNewReminderBtn;
     private Button showReminders;
 
-
-    ReminderNotifierImpl reminderNotifier;
+    private ReminderNotifier reminderNotifier;
+    private ReminderDAO reminderDAO;
 
     @Override
     protected void onStart() {
         super.onStart();
+
         reminderNotifier = new ReminderNotifierImpl();
-        List<Reminder> list = new ArrayList<>();
+        reminderDAO = new ReminderDAOImpl(this);
 
-        LocalTime localTime = LocalTime.now();
-        long hour = localTime.getHour();
-        long minute = localTime.getMinute();
-
-        if (minute + 2 >= 60) {
-            hour++;
-        }
-        minute = (minute + 2) % 60;
-
-        list.add(new Reminder(1, "01.01.1970", "work!", hour, minute));
-        list.add(new Reminder(2, "09.01.1975", "study!", hour, minute + 1));
-
-        reminderNotifier.init(list, this);
+//        reminderNotifier.init(reminderDAO, this);
     }
-  
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.reminder_item);
 

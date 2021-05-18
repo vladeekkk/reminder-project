@@ -9,36 +9,43 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static android.app.AlarmManager.INTERVAL_DAY;
 
 public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderNotifier {
     private static Queue<Reminder> queue;
-    private static PushReminderImpl pushReminder;
+    private static PushReminder pushReminder;
+    private static ReminderDAO reminderDAO;
 
-    @Override
-    public boolean init(List<Reminder> reminders, Context context) {
-        final long INTERVAL_SECOND = 1000;
-        final long INTERVAL_MINUTE = 60;
-        final long INTERVAL_HOUR = 60;
+    static final long INTERVAL_SECOND = 1000;
+    static final long INTERVAL_MINUTE = 60;
+    static final long INTERVAL_HOUR = 60;
 
-        pushReminder = new PushReminderImpl(context);
-
-        long currentTime = System.currentTimeMillis();
-
+    private long getRealTime() {
         LocalTime localTime = LocalTime.now();
         long hour = localTime.getHour();
         long minute = localTime.getMinute();
         long second = localTime.getSecond();
 
-        long realTime = INTERVAL_SECOND * (hour * INTERVAL_HOUR * INTERVAL_MINUTE + minute * INTERVAL_MINUTE + second);
+        return INTERVAL_SECOND * (hour * INTERVAL_HOUR * INTERVAL_MINUTE + minute * INTERVAL_MINUTE + second);
+    }
 
+    private long getReminderTime(Reminder reminder) {
+        return INTERVAL_SECOND * (reminder.getHour() * INTERVAL_HOUR * INTERVAL_MINUTE + reminder.getMinute() * INTERVAL_MINUTE);
+    }
+
+    private void createQueueOfReminders(List<Reminder> reminders) {
+        long realTime = getRealTime();
         queue = reminders.stream().
                 sorted((o1, o2) -> {
                     long delta1 = (o1.getHour() * INTERVAL_HOUR + o1.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
@@ -49,6 +56,19 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
 
                     return (int) (delta1 - delta2);
                 }).collect(Collectors.toCollection(ArrayDeque::new));
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    @Override
+    public boolean init(ReminderDAO reminderDAO, Context context) {
+        ReminderNotifierImpl.reminderDAO = reminderDAO;
+        pushReminder = new PushReminderImpl(context);
+
+        long currentTime = System.currentTimeMillis();
+        long realTime = getRealTime();
+
+        List<Reminder> reminders = reminderDAO.findAll();
+        createQueueOfReminders(reminders);
 
         for (int i = 0; i < reminders.size(); i++) {
             Reminder reminder = reminders.get(i);
@@ -56,44 +76,42 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             Intent intent = new Intent(context, ReminderNotifierImpl.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, intent, 0);
 
-            // after ten and twenty second app will send notification
-            // but it doesn't work in background mode
-            // and I don't know why
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + (i + 1) * 10000, pendingIntent);
-
             long timeNotification = reminder.getHour() * INTERVAL_HOUR + reminder.getMinute();
             long delta = (INTERVAL_DAY + timeNotification * INTERVAL_MINUTE * INTERVAL_SECOND - realTime) % INTERVAL_DAY;
 
-            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta, pendingIntent);
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("dd.MM.yyyy").parse(reminder.getDate());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            Date nowDate = new Date();
+
+            long diffInMollies = Math.abs(date.getTime() - nowDate.getTime());
+            long diff = TimeUnit.DAYS.convert(diffInMollies, TimeUnit.MILLISECONDS);
+            if (realTime > getReminderTime(reminder)) {
+                diff -= INTERVAL_DAY;
+            }
+            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta + diff, pendingIntent);
         }
+        // after ten second app will send notification
+        // but it doesn't work in background mode
+        // and I don't know why
+
+        // uncomment next four lines (read comments above)
+//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(context, ReminderNotifierImpl.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 99999, intent, 0);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + 10000, pendingIntent);
+
         return true;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (queue == null) {
-            final long INTERVAL_SECOND = 1000;
-            final long INTERVAL_MINUTE = 60;
-            final long INTERVAL_HOUR = 60;
-
-            LocalTime localTime = LocalTime.now();
-            long hour = localTime.getHour();
-            long minute = localTime.getMinute();
-            long second = localTime.getSecond();
-
-            long realTime = INTERVAL_SECOND * (hour * INTERVAL_HOUR * INTERVAL_MINUTE + minute * INTERVAL_MINUTE + second);
-
-            ReminderDAOImpl reminderDAO = new ReminderDAOImpl(context);
-            queue = reminderDAO.findAll().stream().
-                    sorted((o1, o2) -> {
-                        long delta1 = (o1.getHour() * INTERVAL_HOUR + o1.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
-                        long delta2 = (o2.getHour() * INTERVAL_HOUR + o2.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND - realTime;
-
-                        delta1 = (delta1 + INTERVAL_DAY) % INTERVAL_DAY;
-                        delta2 = (delta2 + INTERVAL_DAY) % INTERVAL_DAY;
-
-                        return (int) (delta1 - delta2);
-                    }).collect(Collectors.toCollection(ArrayDeque::new));
+            createQueueOfReminders(reminderDAO.findAll());
         }
 
         Reminder reminder = queue.poll();
