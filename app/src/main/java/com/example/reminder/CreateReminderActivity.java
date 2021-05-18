@@ -35,8 +35,8 @@ public class CreateReminderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     reminderService.save(new Reminder(reminderId++,
-                            remiderInfo.getText().toString(),
-                            reminderDate.getText().toString(),1,1));
+                            reminderDate.getText().toString(),
+                            remiderInfo.getText().toString(),1,1));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

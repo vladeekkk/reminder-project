@@ -6,12 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayDeque;
 import java.util.Date;
@@ -64,8 +61,6 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
         ReminderNotifierImpl.reminderDAO = reminderDAO;
         pushReminder = new PushReminderImpl(context);
 
-        long currentTime = System.currentTimeMillis();
-        long realTime = getRealTime();
 
         List<Reminder> reminders = reminderDAO.findAll();
         createQueueOfReminders(reminders);
@@ -76,10 +71,9 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             Intent intent = new Intent(context, ReminderNotifierImpl.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, intent, 0);
 
-            long timeNotification = reminder.getHour() * INTERVAL_HOUR + reminder.getMinute();
-            long delta = (INTERVAL_DAY + timeNotification * INTERVAL_MINUTE * INTERVAL_SECOND - realTime) % INTERVAL_DAY;
+            long timeNotification = INTERVAL_SECOND * (reminder.getHour() * INTERVAL_HOUR * INTERVAL_MINUTE + reminder.getMinute() * INTERVAL_MINUTE);
 
-            Date date = null;
+            Date date;
             try {
                 date = new SimpleDateFormat("dd.MM.yyyy").parse(reminder.getDate());
             } catch (ParseException e) {
@@ -88,12 +82,8 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
 
             Date nowDate = new Date();
 
-            long diffInMollies = Math.abs(date.getTime() - nowDate.getTime());
-            long diff = TimeUnit.DAYS.convert(diffInMollies, TimeUnit.MILLISECONDS);
-            if (realTime > getReminderTime(reminder)) {
-                diff -= INTERVAL_DAY;
-            }
-            alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + delta + diff, pendingIntent);
+            long delta = Math.abs(date.getTime() - nowDate.getTime()) + timeNotification;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delta, pendingIntent);
         }
         // after ten second app will send notification
         // but it doesn't work in background mode
@@ -102,7 +92,7 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
         // uncomment next four lines (read comments above)
 //        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 //        Intent intent = new Intent(context, ReminderNotifierImpl.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 99999, intent, 0);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 10000, intent, 0);
 //        alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime + 10000, pendingIntent);
 
         return true;

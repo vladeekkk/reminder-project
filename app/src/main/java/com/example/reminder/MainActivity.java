@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reminderNotifier = new ReminderNotifierImpl();
         reminderDAO = new ReminderDAOImpl(this);
 
-//        reminderNotifier.init(reminderDAO, this);
+        reminderNotifier.init(reminderDAO, this);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
