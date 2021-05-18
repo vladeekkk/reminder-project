@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Reminder">
         <activity android:name=".CreateReminderActivity"></activity>
         <activity android:name=".AllRemindersView" />
+        <activity android:name=".ReminderUpdater" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

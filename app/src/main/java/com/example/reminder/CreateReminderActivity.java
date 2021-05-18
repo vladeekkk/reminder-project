@@ -17,17 +17,19 @@ public class CreateReminderActivity extends AppCompatActivity {
     private Button saveReminderBtn;
 
     private int reminderId;
+    private ReminderServiceImpl reminderService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
+        reminderService = SingletonDataBaseService.getInstance().getDB();
+
         setContentView(R.layout.activity_create_reminder);
 
         remiderInfo = findViewById(R.id.reminder_info_text);
         reminderDate = findViewById(R.id.reminder_date_text);
         saveReminderBtn = findViewById(R.id.save_remider_btn);
-        ReminderServiceImpl reminderService
-                = new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext()));
         reminderId = reminderService.findAll().stream().mapToInt(Reminder::getId).max().orElse(0) + 1;
 
         saveReminderBtn.setOnClickListener(new View.OnClickListener() {

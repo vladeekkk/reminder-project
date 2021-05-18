@@ -1,6 +1,7 @@
 package com.example.reminder;
 
 import android.os.Build;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Reminder {
     public String getComment() {
         return comment;
     }
-  
+
     public long getMinute() {
         return minute;
     }
@@ -37,6 +38,15 @@ public class Reminder {
         this.comment = comment;
         this.hour = hour;
         this.minute = minute;
+    }
+
+    public Reminder(String allInformation){
+        String[] allInformationSplited = allInformation.split("\n");
+        this.id = Integer.parseInt(allInformationSplited[0]);
+        this.date = allInformationSplited[1];
+        this.comment = allInformationSplited[2];
+        this.hour = Integer.parseInt(allInformationSplited[3]);
+        this.minute = Integer.parseInt(allInformationSplited[4]);
     }
 
     @Override
@@ -63,5 +73,9 @@ public class Reminder {
 //                ", date='" + date + '\'' +
 //                ", comment='" + comment + '\'' +
 //                '}';
+    }
+
+    public String getAllInformation() {
+        return String.valueOf(id) + '\n' + comment + '\n' + date + '\n' + String.valueOf(hour) + '\n' + String.valueOf(minute);
     }
 }
