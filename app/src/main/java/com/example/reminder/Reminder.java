@@ -9,8 +9,8 @@ public class Reminder {
     private final int id;
     private final String date;
     private final String comment;
-    private long hour;
-    private long minute;
+    private final long hour;
+    private final long minute;
 
     public int getId() {
         return id;
@@ -25,11 +25,11 @@ public class Reminder {
     }
 
     public long getMinute() {
-        return id;
+        return minute;
     }
-
-    public int getHour() {
-        return id;
+  
+    public long getHour() {
+        return hour;
     }
 
     public Reminder(int id, String date, String comment, long hour, long minute) {

@@ -3,6 +3,7 @@ package com.example.reminder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -30,39 +31,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
     private Button addNewReminderBtn;
     private Button showReminders;
-    private ReminderServiceImpl reminderService;
 
-
-    ReminderNotifierImpl reminderNotifier;
+    private ReminderNotifier reminderNotifier;
 
     @Override
     protected void onStart() {
         super.onStart();
-        reminderService = SingletonDataBaseService.getInstance().getDB();
+
         reminderNotifier = new ReminderNotifierImpl();
-        List<Reminder> list = new ArrayList<>();
-
-        LocalTime localTime = LocalTime.now();
-        long hour = localTime.getHour();
-        long minute = localTime.getMinute();
-
-        if (minute + 2 >= 60) {
-            hour++;
-        }
-        minute = (minute + 2) % 60;
-
-        list.add(new Reminder(1, "01.01.1970", "work!", hour, minute));
-        list.add(new Reminder(2, "09.01.1975", "study!", hour, minute + 1));
-
-        reminderNotifier.init(list, this);
+        reminderNotifier.init(getApplicationContext());
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.reminder_item);
 
@@ -94,9 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         // examle of pushing a notification
-        PushReminderImpl reminderPusher = new PushReminderImpl(this);
-        reminderPusher.push(new Reminder(0, "03.11.2001", "homework", 1, 1));
+//        PushReminderImpl reminderPusher = new PushReminderImpl(this);
+//        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
     }
-
-
 }
