@@ -56,7 +56,7 @@ public class ReminderDAOImpl implements ReminderDAO {
 
     /*
      * Change some reminder
-     * if reminder with input reminder id does not exist, then dataBase add it
+     * if reminder with input reminder id does not exist, then dataBase addReminder it
      */
     @Override
     public Reminder update(Reminder reminder) {

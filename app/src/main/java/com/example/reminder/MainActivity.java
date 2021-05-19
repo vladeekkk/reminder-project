@@ -3,6 +3,7 @@ package com.example.reminder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -34,16 +35,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button showReminders;
 
     private ReminderNotifier reminderNotifier;
-    private ReminderDAO reminderDAO;
 
     @Override
     protected void onStart() {
         super.onStart();
 
         reminderNotifier = new ReminderNotifierImpl();
-        reminderDAO = new ReminderDAOImpl(this);
-
-        reminderNotifier.init(reminderDAO, this);
+        reminderNotifier.init(getApplicationContext());
     }
 
     protected void onCreate(Bundle savedInstanceState) {
