@@ -34,7 +34,7 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
     private void setReminder(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ReminderNotifierImpl.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, queue.size(), intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, 0);
 
         Date date;
         try {
@@ -62,11 +62,11 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
     @Override
     public void init(Context cntx) {
         context = cntx;
+        reminderDAO = new ReminderDAOImpl(context);
+        pushReminder = new PushReminderImpl(context);
         if (isInit) {
             return;
         }
-        reminderDAO = new ReminderDAOImpl(context);
-        pushReminder = new PushReminderImpl(context);
 
         List<Reminder> reminders = reminderDAO.findAll();
         createQueueOfReminders(reminders);
@@ -88,6 +88,27 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
         }
         queue.add(reminder);
         setReminder(reminder);
+
+        while (!stack.isEmpty()) {
+            queue.add(stack.pop());
+        }
+    }
+
+    @Override
+    public void deleteReminder(Reminder reminder) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ReminderNotifierImpl.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.cancel(pendingIntent);
+
+        ReminderComparator reminderComparator = new ReminderComparator();
+        Stack<Reminder> stack = new Stack<>();
+        while (!queue.isEmpty() &&
+                reminderComparator.compare(reminder, queue.getLast()) != 0) {
+            stack.push(queue.pollLast());
+        }
+        queue.pollLast();
 
         while (!stack.isEmpty()) {
             queue.add(stack.pop());

@@ -1,5 +1,6 @@
 package com.example.reminder;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 
 import java.util.Arrays;
@@ -65,17 +66,13 @@ public class Reminder {
         return Arrays.hashCode(new int[]{Arrays.hashCode(new String[]{date, comment}), id});
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return comment + '\n' + date;
-//        return "Reminder{" +
-//                "id=" + id +
-//                ", date='" + date + '\'' +
-//                ", comment='" + comment + '\'' +
-//                '}';
+        return comment + '\n' + date + ' ' + String.format("%02d", hour) + ':' + String.format("%02d", minute);
     }
 
     public String getAllInformation() {
-        return String.valueOf(id) + '\n' + comment + '\n' + date + '\n' + String.valueOf(hour) + '\n' + String.valueOf(minute);
+        return String.valueOf(id) + '\n' + date + '\n' + comment + '\n' + String.valueOf(hour) + '\n' + String.valueOf(minute);
     }
 }

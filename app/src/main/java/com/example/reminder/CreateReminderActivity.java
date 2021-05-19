@@ -39,7 +39,7 @@ public class CreateReminderActivity extends AppCompatActivity {
                 try {
                     Reminder reminder = new Reminder(reminderId++,
                             reminderDate.getText().toString(),
-                            remiderInfo.getText().toString(),14,56);
+                            remiderInfo.getText().toString(),22,11);
                     reminderService.save(reminder);
                     reminderNotifier.addReminder(reminder);
                 } catch (IOException e) {

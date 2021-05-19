@@ -53,10 +53,15 @@ public class AllRemindersView extends AppCompatActivity {
                 adb.setNegativeButton("Cancel", null);
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        reminderService.delete(new Reminder(adapterAllInformation.getItem(position)));
+                        Reminder reminder = new Reminder(adapterAllInformation.getItem(position));
+                        reminderService.delete(reminder);
                         adapter.remove(adapter.getItem(position));
                         adapterAllInformation.remove(adapterAllInformation.getItem(position));
                         adapter.notifyDataSetChanged();
+
+                        ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
+                        reminderNotifier.init(getApplicationContext());
+                        reminderNotifier.deleteReminder(reminder);
                     }
                 });
                 adb.show();
