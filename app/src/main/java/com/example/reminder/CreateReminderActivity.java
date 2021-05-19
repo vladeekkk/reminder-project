@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.TimePicker;
 
 import java.io.IOException;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
-    private EditText remiderInfo;
+    private EditText reminderInfo;
     private EditText reminderDate;
     private Button saveReminderBtn;
+    private NumberPicker hourPicker;
 
     private int reminderId;
     private ReminderServiceImpl reminderService;
@@ -26,10 +29,14 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_create_reminder);
 
-        remiderInfo = findViewById(R.id.reminder_info_text);
+        reminderInfo = findViewById(R.id.reminder_info_text);
         reminderDate = findViewById(R.id.reminder_date_text);
-        saveReminderBtn = findViewById(R.id.save_remider_btn);
+        saveReminderBtn = findViewById(R.id.save_reminder_btn);
         reminderId = reminderService.findAll().stream().mapToInt(Reminder::getId).max().orElse(0) + 1;
+
+        TimePicker timePicker = findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
+
         ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
         reminderNotifier.init(getApplicationContext());
 
@@ -39,7 +46,9 @@ public class CreateReminderActivity extends AppCompatActivity {
                 try {
                     Reminder reminder = new Reminder(reminderId++,
                             reminderDate.getText().toString(),
-                            remiderInfo.getText().toString(),22,11);
+                            reminderInfo.getText().toString(),
+                            timePicker.getHour(),
+                            timePicker.getMinute());
                     reminderService.save(reminder);
                     reminderNotifier.addReminder(reminder);
                 } catch (IOException e) {

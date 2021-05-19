@@ -29,18 +29,29 @@
         android:layout_height="wrap_content"
         android:hint="01.01.2001" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select reminder time:" />
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="183dp"
+        android:layout_height="147dp"
+        android:timePickerMode="spinner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
+
     <Button
         android:id="@+id/open_calendar_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open calendar"
-        />
+        android:text="Open calendar" />
 
     <Button
-        android:id="@+id/save_remider_btn"
+        android:id="@+id/save_reminder_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save reminder"
-        />
+        android:text="Save reminder" />
 
 </LinearLayout>
