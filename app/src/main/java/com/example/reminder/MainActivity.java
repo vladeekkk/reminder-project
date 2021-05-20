@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-
-        reminderNotifier = new ReminderNotifierImpl();
-        reminderNotifier.init(getApplicationContext());
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        reminderNotifier = new ReminderNotifierImpl();
+        reminderNotifier.init(getApplicationContext());
 
         setContentView(R.layout.reminder_item);
 

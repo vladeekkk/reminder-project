@@ -20,7 +20,7 @@ public class ReminderUpdater extends Activity {
         Reminder clickedReminder = new Reminder(getIntent().getStringExtra("clickedReminder"));
         reminderInfo = findViewById(R.id.reminder_info_text);
         reminderDate = findViewById(R.id.reminder_date_text);
-        saveReminderBtn = findViewById(R.id.save_remider_btn);
+        saveReminderBtn = findViewById(R.id.save_reminder_btn);
         ReminderServiceImpl reminderService = SingletonDataBaseService.getInstance().getDB();
 
         reminderInfo.setText(clickedReminder.getComment(), TextView.BufferType.EDITABLE);

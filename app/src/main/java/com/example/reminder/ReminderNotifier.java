@@ -6,4 +6,6 @@ public interface ReminderNotifier {
     void init(Context cntx);
 
     void addReminder(Reminder reminder);
+
+    void deleteReminder(Reminder reminder);
 }
