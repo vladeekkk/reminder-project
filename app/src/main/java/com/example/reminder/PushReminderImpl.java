@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Random;
+
 public class PushReminderImpl implements PushReminder {
 
     private Context context;
@@ -40,7 +42,8 @@ public class PushReminderImpl implements PushReminder {
                 .setContentIntent(pendingIntent);
 
         createChannel(notificationManager);
-        notificationManager.notify(1, notificationBuilder.build());
+        Random rand = new Random();
+        notificationManager.notify(rand.nextInt(), notificationBuilder.build());
         return true;
     }
 
