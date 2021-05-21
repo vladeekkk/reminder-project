@@ -21,9 +21,10 @@ import java.util.TimeZone;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
+    private final String TIME_STRING = "time";
+    private final String DATE_STRING = "date";
+
     private EditText reminderInfo;
-    private Button saveReminderBtn;
-    private Button pickDateBtn;
     private TextView selectedDateText;
 
     private Calendar selectedCalendar;
@@ -46,7 +47,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
 
         selectedDateText = findViewById(R.id.show_selected_date);
-        pickDateBtn = findViewById(R.id.pick_date_button);
+        Button pickDateBtn = findViewById(R.id.pick_date_button);
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
         materialDateBuilder.setTitleText("SELECT A DATE");
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
@@ -67,23 +68,20 @@ public class CreateReminderActivity extends AppCompatActivity {
         timePicker = findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
 
-        DatePicker datePicker = findViewById(R.id.datePicker);
-        datePicker.setMinDate(System.currentTimeMillis());
-
         ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
         reminderNotifier.init(getApplicationContext());
 
-        saveReminderBtn = findViewById(R.id.save_reminder_btn);
+        Button saveReminderBtn = findViewById(R.id.save_reminder_btn);
         saveReminderBtn.setOnClickListener(v -> {
             try {
                 calendar = Calendar.getInstance(TimeZone.getDefault());
 
                 if (checkEqualDates() && checkWrongTimeChoice()) {
-                    sendAlert("time");
+                    sendAlert(TIME_STRING);
                     return;
                 }
                 if (checkWrongChoice()) {
-                    sendAlert("date");
+                    sendAlert(DATE_STRING);
                     return;
                 }
                 @SuppressLint("DefaultLocale")
@@ -98,7 +96,6 @@ public class CreateReminderActivity extends AppCompatActivity {
                         timePicker.getMinute());
                 reminderService.save(reminder);
                 reminderNotifier.addReminder(reminder);
-
                 finish();
             } catch (IOException e) {
                 e.printStackTrace();
