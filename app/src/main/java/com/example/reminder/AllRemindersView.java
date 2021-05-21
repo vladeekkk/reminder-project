@@ -29,14 +29,14 @@ public class AllRemindersView extends AppCompatActivity {
         List<String> listOfReminders = reminderService.findAll().stream().map(Object::toString).collect(Collectors.toList());
         List<String> listOfRemindersAllInformation = reminderService.findAll().stream().map(Reminder::getAllInformation).collect(Collectors.toList());
 
-        itemListView = (ListView) findViewById(R.id.list);
+        itemListView = findViewById(R.id.list);
 
-        adapter = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<>(
                 this,
                 R.layout.simple_list_item,
                 listOfReminders);
 
-        adapterAllInformation = new ArrayAdapter<String>(
+        adapterAllInformation = new ArrayAdapter<>(
                 this,
                 R.layout.simple_list_item,
                 listOfRemindersAllInformation);
