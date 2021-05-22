@@ -178,11 +178,8 @@ public class CreateReminderActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                menuMode.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    @Override
-                    public void onDismiss(PopupMenu menu) {
-                        return;
-                    }
+                menuMode.setOnDismissListener(menu -> {
+                    return;
                 });
                 menuMode.show();
             }
@@ -262,17 +259,6 @@ public class CreateReminderActivity extends AppCompatActivity {
         return calendarCurrent.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
                 (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
                         calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
