@@ -5,27 +5,35 @@
     android:layout_height="match_parent" >
 
 <LinearLayout
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
     tools:context=".CreateReminderActivity">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select reminder date:" />
-
-    <DatePicker
-        android:id="@+id/datePicker"
+        android:id="@+id/show_selected_date"
         android:layout_width="wrap_content"
-        android:layout_height="141dp"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/selected_date"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/pick_date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginVertical="12dp"
+        android:text="@string/select_date"
+        android:textSize="18sp"
+        />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select reminder time:" />
+        android:text="@string/select_reminder_time" />
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -37,19 +45,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter reminder info:" />
+        android:text="@string/enter_reminder_info" />
 
     <EditText
         android:id="@+id/reminder_info_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="reminder info" />
+        android:hint="@string/reminder_info"
+        android:inputType="textCapSentences"
+        android:lines="2"
+        android:maxLength="140"
+        />
 
     <Button
         android:id="@+id/save_reminder_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save reminder" />
+        android:text="@string/save_reminder"
+        android:layout_gravity="center"
+        />
 
 </LinearLayout>
 </ScrollView>

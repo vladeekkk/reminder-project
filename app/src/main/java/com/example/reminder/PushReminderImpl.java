@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Random;
+
 public class PushReminderImpl implements PushReminder {
 
     private Context context;
@@ -35,12 +37,15 @@ public class PushReminderImpl implements PushReminder {
                 .setSmallIcon(R.drawable.ic_baseline_warning_24)
                 .setContentTitle("New Reminder, date is " + reminder.getDate())
                 .setContentText(reminder.getComment())
+                .setStyle(new NotificationCompat.BigTextStyle().
+                        bigText(reminder.getComment()))
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent);
 
         createChannel(notificationManager);
-        notificationManager.notify(1, notificationBuilder.build());
+        Random rand = new Random();
+        notificationManager.notify(rand.nextInt(), notificationBuilder.build());
         return true;
     }
 
