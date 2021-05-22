@@ -3,11 +3,13 @@ package com.example.reminder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -76,6 +79,12 @@ public class CreateReminderActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
@@ -83,6 +92,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_create_reminder);
         setupUI(findViewById(R.id.layout));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
         reminderNotifier.init(getApplicationContext());
@@ -252,5 +262,20 @@ public class CreateReminderActivity extends AppCompatActivity {
         return calendarCurrent.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
                 (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
                         calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }
