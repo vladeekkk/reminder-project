@@ -5,15 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -28,7 +25,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     private TextView selectedDateText;
 
     private Calendar selectedCalendar;
-    private Calendar calendar;
+    private Calendar calendarCurrent;
     private TimePicker timePicker;
 
     private int reminderId;
@@ -45,9 +42,9 @@ public class CreateReminderActivity extends AppCompatActivity {
         reminderInfo = findViewById(R.id.reminder_info_text);
         reminderInfo.setSelection(0);
 
-
         selectedDateText = findViewById(R.id.show_selected_date);
         Button pickDateBtn = findViewById(R.id.pick_date_button);
+
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
         materialDateBuilder.setTitleText("SELECT A DATE");
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
@@ -74,7 +71,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         Button saveReminderBtn = findViewById(R.id.save_reminder_btn);
         saveReminderBtn.setOnClickListener(v -> {
             try {
-                calendar = Calendar.getInstance(TimeZone.getDefault());
+                calendarCurrent = Calendar.getInstance(TimeZone.getDefault());
 
                 if (checkEqualDates() && checkWrongTimeChoice()) {
                     sendAlert(TIME_STRING);
@@ -109,21 +106,21 @@ public class CreateReminderActivity extends AppCompatActivity {
         adb.setMessage("You are trying to set the " + errorType + " that has already passed");
         adb.setPositiveButton("Ok", (dialog, which) -> dialog.cancel());
         adb.show();
-
     }
 
     boolean checkWrongChoice() {
-        return calendar.getTimeInMillis() > selectedCalendar.getTimeInMillis();
+        return calendarCurrent.getTimeInMillis() > selectedCalendar.getTimeInMillis();
     }
 
     boolean checkEqualDates() {
-        return calendar.get(Calendar.DAY_OF_MONTH) == selectedCalendar.get(Calendar.DAY_OF_MONTH) &&
-                calendar.get(Calendar.MONTH) == selectedCalendar.get(Calendar.MONTH) &&
-                calendar.get(Calendar.YEAR) == selectedCalendar.get(Calendar.YEAR);
+        return calendarCurrent.get(Calendar.DAY_OF_MONTH) == selectedCalendar.get(Calendar.DAY_OF_MONTH) &&
+                calendarCurrent.get(Calendar.MONTH) == selectedCalendar.get(Calendar.MONTH) &&
+                calendarCurrent.get(Calendar.YEAR) == selectedCalendar.get(Calendar.YEAR);
     }
 
     boolean checkWrongTimeChoice() {
-        return calendar.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
-                (calendar.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() && calendar.get(Calendar.MINUTE) >= timePicker.getMinute());
+        return calendarCurrent.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
+                (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
+                        calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
     }
 }
