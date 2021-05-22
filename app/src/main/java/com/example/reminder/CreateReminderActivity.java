@@ -123,8 +123,6 @@ public class CreateReminderActivity extends AppCompatActivity {
 
     boolean checkWrongChoice() {
         return calendarCurrent.getTime().compareTo(selectedCalendar.getTime()) >= 0;
-//        Log.i("MY_TAG", "checkWrongChoice: " + calendarCurrent.getTimeInMillis() + "----" + selectedCalendar.getTimeInMillis());
-//        return calendarCurrent.getTimeInMillis() >= selectedCalendar.getTimeInMillis();
     }
 
     boolean checkEqualDates() {
