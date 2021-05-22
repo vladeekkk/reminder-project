@@ -2,9 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
 <LinearLayout
+    android:id="@+id/layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -33,6 +34,17 @@
         android:layout_height="149dp"
         android:timePickerMode="spinner" />
 
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mode: Simple reminder" />
+
+    <Button
+        android:id="@+id/mode_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose the mode" />
 
     <TextView
         android:layout_width="match_parent"
@@ -43,7 +55,14 @@
         android:id="@+id/reminder_info_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="reminder info" />
+        android:hint="reminder info"
+        />
+
+    <TextView
+        android:id="@+id/selectedMenuItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"/>
 
     <Button
         android:id="@+id/save_reminder_btn"

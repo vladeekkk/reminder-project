@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <group android:id="@+id/menu_group" >
+        <item
+            android:id="@+id/menu_simple"
+            android:icon="@mipmap/ic_launcher"
+            android:title="Simple reminder"/>
+        <item
+            android:id="@+id/menu_spaced_repetition"
+            android:title="Spaced repetition reminder"/>
+        <item
+            android:id="@+id/menu_repeated"
+            android:title="Repeated reminder">
+            <menu>
+                android:id="@+id/submenu"
+                <item
+                    android:id="@+id/submenu_day"
+                    android:title="Period - day"
+                    />
+                <item
+                    android:id="@+id/submenu_week"
+                    android:title="Period - week"
+                    />
+                <item
+                    android:id="@+id/submenu_minute"
+                    android:title="Period - minute (for example)"
+                    />
+            </menu>
+        </item>
+    </group>
+</menu>
