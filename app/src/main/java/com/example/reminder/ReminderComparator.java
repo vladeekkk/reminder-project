@@ -1,17 +1,15 @@
 package com.example.reminder;
 
 import android.annotation.SuppressLint;
+import android.text.format.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class ReminderComparator implements Comparator<Reminder> {
-    static final long INTERVAL_SECOND = 1000;
-    static final long INTERVAL_MINUTE = 60;
-    static final long INTERVAL_HOUR = 60;
-
     @SuppressLint("SimpleDateFormat")
     @Override
     public int compare(Reminder r1, Reminder r2) {
@@ -24,8 +22,10 @@ public class ReminderComparator implements Comparator<Reminder> {
             throw new RuntimeException(e);
         }
 
-        long delta1 = (r1.getHour() * INTERVAL_HOUR + r1.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND;
-        long delta2 = (r2.getHour() * INTERVAL_HOUR + r2.getMinute()) * INTERVAL_MINUTE * INTERVAL_SECOND;
+        long delta1 = DateUtils.HOUR_IN_MILLIS * r1.getHour() +
+                DateUtils.MINUTE_IN_MILLIS * r1.getMinute();
+        long delta2 = DateUtils.HOUR_IN_MILLIS * r2.getHour() +
+                DateUtils.MINUTE_IN_MILLIS * r2.getMinute();
 
         return (int) ((date1.getTime() + delta1) - (date2.getTime() + delta2));
     }

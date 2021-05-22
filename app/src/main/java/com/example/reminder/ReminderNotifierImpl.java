@@ -6,10 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
@@ -19,9 +22,9 @@ import java.util.stream.Collectors;
 public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderNotifier {
     private static Deque<Reminder> queue;
     private static PushReminder pushReminder;
-    private static ReminderDAO reminderDAO;
+    private static ReminderService reminderService;
     private static boolean isInit = false;
-    private Context context;
+    private static Context context;
 
     @SuppressLint("SimpleDateFormat")
     private void createQueueOfReminders(List<Reminder> reminders) {
@@ -43,15 +46,15 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             throw new RuntimeException(e);
         }
 
-        long timeReminder = ReminderComparator.INTERVAL_SECOND * ReminderComparator.INTERVAL_MINUTE *
-                (reminder.getHour() * ReminderComparator.INTERVAL_HOUR + reminder.getMinute());
-        Date curDate = new Date();
-        long delta = (date.getTime() - curDate.getTime()) + timeReminder;
+        long timeReminder = DateUtils.HOUR_IN_MILLIS * reminder.getHour() +
+                DateUtils.MINUTE_IN_MILLIS * reminder.getMinute();
+
+        long delta = (date.getTime() - System.currentTimeMillis()) + timeReminder;
 
         if (delta >= 0) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delta, pendingIntent);
         } else {
-            reminderDAO.delete(reminder);
+            reminderService.delete(reminder);
         }
 //        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 //        intent = new Intent(context, ReminderNotifierImpl.class);
@@ -62,13 +65,13 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
     @Override
     public void init(Context cntx) {
         context = cntx;
-        reminderDAO = new ReminderDAOImpl(context);
+        reminderService = new ReminderServiceImpl(new ReminderDAOImpl(context));
         pushReminder = new PushReminderImpl(context);
         if (isInit) {
             return;
         }
 
-        List<Reminder> reminders = reminderDAO.findAll();
+        List<Reminder> reminders = reminderService.findAll();
         createQueueOfReminders(reminders);
 
         for (Reminder reminder : reminders) {
@@ -117,11 +120,12 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context cntx, Intent intent) {
+        context = cntx;
         if (queue == null) {
             pushReminder = new PushReminderImpl(context);
-            reminderDAO = new ReminderDAOImpl(context);
-            createQueueOfReminders(reminderDAO.findAll());
+            reminderService = new ReminderServiceImpl(new ReminderDAOImpl(context));
+            createQueueOfReminders(reminderService.findAll());
         }
 
         Reminder reminder = queue.poll();
@@ -129,6 +133,46 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
             throw new RuntimeException("no reminders in data base");
         }
         pushReminder.push(reminder);
-        reminderDAO.delete(reminder);
+        reminderService.delete(reminder);
+
+        if (reminder.getMode() == Reminder.PERIOD_MODE ||
+                reminder.getMode() == Reminder.EXP_MODE) {
+            SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(context)));
+            ReminderService reminderService = SingletonDataBaseService.getInstance().getDB();
+
+            Date date;
+            try {
+                date = new SimpleDateFormat("dd.MM.yyyy").parse(reminder.getDate());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            long time = date.getTime();
+            time += DateUtils.HOUR_IN_MILLIS * reminder.getHour() +
+                    DateUtils.MINUTE_IN_MILLIS * reminder.getMinute();
+
+            long delta = reminder.getMode() == Reminder.PERIOD_MODE ?
+                    reminder.getDelta() : Reminder.nextDelta(reminder.getDelta());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time + delta);
+
+            String dateString = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH)) + '.' +
+                    String.format("%02d", calendar.get(Calendar.MONTH) + 1) + '.' +
+                    calendar.get(Calendar.YEAR);
+
+            Reminder nextReminder = new Reminder(reminder.getId(),
+                    dateString,
+                    reminder.getComment(),
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    reminder.getMode(),
+                    delta);
+            addReminder(nextReminder);
+            try {
+                reminderService.save(nextReminder);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

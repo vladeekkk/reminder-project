@@ -1,39 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".CreateReminderActivity">
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Enter reminder info:" />
+        android:orientation="vertical"
+        tools:context=".CreateReminderActivity">
 
-    <EditText
-        android:id="@+id/reminder_info_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="reminder info" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select reminder date:" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select reminder date:" />
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="141dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner" />
 
-    <EditText
-        android:id="@+id/reminder_date_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="01.01.2001" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select reminder time:" />
 
-    <Button
-        android:id="@+id/save_reminder_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save reminder"
-        />
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="173dp"
+            android:layout_height="149dp"
+            android:timePickerMode="spinner" />
 
-</LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter reminder info:" />
+
+        <EditText
+            android:id="@+id/reminder_info_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="reminder info" />
+
+        <Button
+            android:id="@+id/save_reminder_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save reminder" />
+
+    </LinearLayout>
+</ScrollView>
