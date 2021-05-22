@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.MenuItem;
@@ -212,7 +213,8 @@ public class CreateReminderActivity extends AppCompatActivity {
                         delta[0]);
                 reminderService.save(reminder);
                 reminderNotifier.addReminder(reminder);
-                finish();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             } catch (IOException e) {
                 e.printStackTrace();
             }

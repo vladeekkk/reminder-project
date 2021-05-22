@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ public class AllRemindersView extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ListView itemListView;
     private ArrayAdapter<String> adapterAllInformation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,13 @@ public class AllRemindersView extends AppCompatActivity {
         List<String> listOfRemindersAllInformation = reminderService.findAll()
                 .stream().map(Reminder::getAllInformation).collect(Collectors.toList());
 
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), CreateReminderActivity.class);
+            startActivity(intent);
+        });
+
+
         itemListView = findViewById(R.id.list);
 
         adapter = new ArrayAdapter<>(
@@ -43,6 +53,7 @@ public class AllRemindersView extends AppCompatActivity {
                 this,
                 R.layout.simple_list_item,
                 listOfRemindersAllInformation);
+
 
 
         itemListView.setAdapter(adapter);
