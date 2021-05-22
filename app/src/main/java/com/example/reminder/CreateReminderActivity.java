@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -72,12 +73,15 @@ public class CreateReminderActivity extends AppCompatActivity {
         saveReminderBtn.setOnClickListener(v -> {
             try {
                 calendarCurrent = Calendar.getInstance(TimeZone.getDefault());
-
+                if (checkNotEnoughInfo()) {
+                    sendAlert("");
+                    return;
+                }
                 if (checkEqualDates() && checkWrongTimeChoice()) {
                     sendAlert(TIME_STRING);
                     return;
                 }
-                if (checkWrongChoice()) {
+                if (checkWrongChoice() && !checkEqualDates()) {
                     sendAlert(DATE_STRING);
                     return;
                 }
@@ -102,14 +106,25 @@ public class CreateReminderActivity extends AppCompatActivity {
 
     void sendAlert(String errorType) {
         AlertDialog.Builder adb = new AlertDialog.Builder(CreateReminderActivity.this);
-        adb.setTitle("Invalid " + errorType);
-        adb.setMessage("You are trying to set the " + errorType + " that has already passed");
+        if (errorType.equals(DATE_STRING) || errorType.equals(TIME_STRING)) {
+            adb.setTitle("Invalid " + errorType);
+            adb.setMessage("You are trying to set the " + errorType + " that has already passed");
+        } else {
+            adb.setTitle("Invalid reminder");
+            adb.setMessage("Please set more info!");
+        }
         adb.setPositiveButton("Ok", (dialog, which) -> dialog.cancel());
         adb.show();
     }
 
+    boolean checkNotEnoughInfo() {
+        return selectedCalendar == null || reminderInfo.getText().toString().isEmpty();
+    }
+
     boolean checkWrongChoice() {
-        return calendarCurrent.getTimeInMillis() > selectedCalendar.getTimeInMillis();
+        return calendarCurrent.getTime().compareTo(selectedCalendar.getTime()) >= 0;
+//        Log.i("MY_TAG", "checkWrongChoice: " + calendarCurrent.getTimeInMillis() + "----" + selectedCalendar.getTimeInMillis());
+//        return calendarCurrent.getTimeInMillis() >= selectedCalendar.getTimeInMillis();
     }
 
     boolean checkEqualDates() {
