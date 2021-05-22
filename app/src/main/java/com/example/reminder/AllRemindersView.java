@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AllRemindersView extends AppCompatActivity {
-    private ReminderServiceImpl reminderService;
     public final static int REQUEST_CODE = 1;
-    ArrayAdapter<String> adapter;
-    ListView itemListView;
-    ArrayAdapter<String> adapterAllInformation;
+
+    private ReminderServiceImpl reminderService;
+    private ArrayAdapter<String> adapter;
+    private ListView itemListView;
+    private ArrayAdapter<String> adapterAllInformation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +27,21 @@ public class AllRemindersView extends AppCompatActivity {
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
 
-        List<String> listOfReminders = reminderService.findAll().stream().map(Object::toString).collect(Collectors.toList());
-        List<String> listOfRemindersAllInformation = reminderService.findAll().stream().map(Reminder::getAllInformation).collect(Collectors.toList());
+        List<String> listOfReminders = reminderService.findAll()
+                .stream().map(Object::toString).collect(Collectors.toList());
+        List<String> listOfRemindersAllInformation = reminderService.findAll()
+                .stream().map(Reminder::getAllInformation).collect(Collectors.toList());
 
-        itemListView = (ListView) findViewById(R.id.list);
+        itemListView = findViewById(R.id.list);
 
-        adapter = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.simple_list_item,
                 listOfReminders);
 
-        adapterAllInformation = new ArrayAdapter<String>(
+        adapterAllInformation = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.simple_list_item,
                 listOfRemindersAllInformation);
 
 
