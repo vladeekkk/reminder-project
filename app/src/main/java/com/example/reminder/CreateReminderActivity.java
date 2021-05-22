@@ -48,7 +48,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        if(inputMethodManager.isAcceptingText()){
+        if (inputMethodManager.isAcceptingText()) {
             inputMethodManager.hideSoftInputFromWindow(
                     activity.getCurrentFocus().getWindowToken(),
                     0
@@ -126,7 +126,7 @@ public class CreateReminderActivity extends AppCompatActivity {
                                 switch (item.getItemId()) {
                                     case R.id.menu_simple:
                                         Toast.makeText(getApplicationContext(),
-                                                "You chose Simple data",
+                                                "You chose Simple reminder",
                                                 Toast.LENGTH_SHORT).show();
                                         textView.setText("Mode: Simple reminder");
                                         mode[0] = Reminder.SIMPLE_MODE;
@@ -182,7 +182,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         timePicker = findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
 
-        Button saveReminderBtn = findViewById(R.id.save_reminder_btn);
+        saveReminderBtn = findViewById(R.id.save_reminder_btn);
         saveReminderBtn.setOnClickListener(v -> {
             try {
                 calendarCurrent = Calendar.getInstance(TimeZone.getDefault());
@@ -219,7 +219,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         });
     }
 
-    void sendAlert(String errorType) {
+    private void sendAlert(String errorType) {
         AlertDialog.Builder adb = new AlertDialog.Builder(CreateReminderActivity.this);
         if (errorType.equals(DATE_STRING) || errorType.equals(TIME_STRING)) {
             adb.setTitle("Invalid " + errorType);
@@ -232,21 +232,21 @@ public class CreateReminderActivity extends AppCompatActivity {
         adb.show();
     }
 
-    boolean checkNotEnoughInfo() {
+    private boolean checkNotEnoughInfo() {
         return selectedCalendar == null || reminderInfo.getText().toString().isEmpty();
     }
 
-    boolean checkWrongChoice() {
+    private boolean checkWrongChoice() {
         return calendarCurrent.getTime().compareTo(selectedCalendar.getTime()) >= 0;
     }
 
-    boolean checkEqualDates() {
+    private boolean checkEqualDates() {
         return calendarCurrent.get(Calendar.DAY_OF_MONTH) == selectedCalendar.get(Calendar.DAY_OF_MONTH) &&
                 calendarCurrent.get(Calendar.MONTH) == selectedCalendar.get(Calendar.MONTH) &&
                 calendarCurrent.get(Calendar.YEAR) == selectedCalendar.get(Calendar.YEAR);
     }
 
-    boolean checkWrongTimeChoice() {
+    private boolean checkWrongTimeChoice() {
         return calendarCurrent.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
                 (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
                         calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
