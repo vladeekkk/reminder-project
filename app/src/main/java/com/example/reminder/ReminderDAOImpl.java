@@ -34,7 +34,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder save(Reminder reminder) {
-        String sql = "INSERT OR IGNORE INTO reminder_database(id, date, comment, hour, minute, mode, delta) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT OR IGNORE INTO reminder_database(id, date, comment, hour, minute, mode, delta, tag) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = write.compileStatement(sql);
         statement.bindLong(1, reminder.getId());
         statement.bindString(2, reminder.getDate());
@@ -43,16 +43,8 @@ public class ReminderDAOImpl implements ReminderDAO {
         statement.bindLong(5, reminder.getMinute());
         statement.bindLong(6, reminder.getMode());
         statement.bindLong(7, reminder.getDelta());
+        statement.bindString(8, reminder.getTag());
         statement.executeInsert();
-
-//        ContentValues values = new ContentValues();
-//        values.put(FeedReaderContract.FeedEntry.ID, reminder.getId());
-//        values.put(FeedReaderContract.FeedEntry.DATE, reminder.getDate());
-//        values.put(FeedReaderContract.FeedEntry.COMMENT, reminder.getComment());
-//        values.put(FeedReaderContract.FeedEntry.HOUR, reminder.getHour());
-//        values.put(FeedReaderContract.FeedEntry.MINUTE, reminder.getMinute());
-//        long newRowId = write.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
-//        System.out.println(reminder.getId());
         return reminder;
     }
 
@@ -62,7 +54,7 @@ public class ReminderDAOImpl implements ReminderDAO {
      */
     @Override
     public Reminder update(Reminder reminder) {
-        String sql = "REPLACE INTO reminder_database(id, date, comment, hour, minute, mode, delta) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "REPLACE INTO reminder_database(id, date, comment, hour, minute, mode, delta, tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = write.compileStatement(sql);
         statement.bindLong(1, reminder.getId());
         statement.bindString(2, reminder.getDate());
@@ -71,6 +63,7 @@ public class ReminderDAOImpl implements ReminderDAO {
         statement.bindLong(5, reminder.getMinute());
         statement.bindLong(6, reminder.getMode());
         statement.bindLong(7, reminder.getDelta());
+        statement.bindString(8, reminder.getTag());
         statement.executeUpdateDelete();
         return reminder;
     }
@@ -101,7 +94,8 @@ public class ReminderDAOImpl implements ReminderDAO {
                 FeedReaderContract.FeedEntry.HOUR,
                 FeedReaderContract.FeedEntry.MINUTE,
                 FeedReaderContract.FeedEntry.MODE,
-                FeedReaderContract.FeedEntry.DELTA
+                FeedReaderContract.FeedEntry.DELTA,
+                FeedReaderContract.FeedEntry.TAG
         };
         Cursor cursor = read.query(FeedReaderContract.FeedEntry.TABLE_NAME, projection, null, null, null, null, null);
         List<Reminder> reminders = new ArrayList<>();
@@ -113,7 +107,8 @@ public class ReminderDAOImpl implements ReminderDAO {
             int minute = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.MINUTE));
             int mode = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.MODE));
             long delta = cursor.getLong(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.DELTA));
-            reminders.add(new Reminder(id, date, comment, hour, minute, mode, delta));
+            String tag = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedEntry.TAG));
+            reminders.add(new Reminder(id, date, comment, hour, minute, mode, delta, tag));
         }
         cursor.close();
         return reminders;

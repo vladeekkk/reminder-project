@@ -60,14 +60,27 @@
         android:text="@string/enter_reminder_info" />
 
     <EditText
-        android:id="@+id/reminder_info_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/reminder_info"
-        android:inputType="textCapSentences"
-        android:lines="2"
-        android:maxLength="140"
-        />
+            android:id="@+id/reminder_info_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/reminder_info"
+            android:inputType="textCapSentences"
+            android:lines="2"
+            android:maxLength="140"
+    />
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter reminder tag:" android:id="@+id/textView"/>
+    <EditText
+            android:id="@+id/reminder_tag_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="reminder tag"
+            android:inputType="textCapSentences"
+            android:lines="2"
+            android:maxLength="140"
+    />
 
     <Button
         android:id="@+id/save_reminder_btn"

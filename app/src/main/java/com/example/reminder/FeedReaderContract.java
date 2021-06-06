@@ -17,5 +17,6 @@ public class FeedReaderContract {
         public static final String MINUTE = "minute";
         public static final String MODE = "mode";
         public static final String DELTA = "delta";
+        public static final String TAG = "tag";
     }
 }

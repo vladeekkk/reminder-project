@@ -166,7 +166,8 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE),
                     reminder.getMode(),
-                    delta);
+                    delta,
+                    reminder.getTag());
             addReminder(nextReminder);
             try {
                 reminderService.save(nextReminder);
