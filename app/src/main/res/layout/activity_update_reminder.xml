@@ -2,54 +2,81 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+<LinearLayout
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    tools:context=".CreateReminderActivity">
+
+    <TextView
+        android:id="@+id/show_selected_date"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:context=".CreateReminderActivity">
+        android:layout_gravity="left"
+        android:text="@string/selected_date"
+        android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select reminder date:" />
+    <Button
+        android:id="@+id/pick_date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginVertical="12dp"
+        android:text="@string/select_date"
+        android:textSize="18sp"
+        />
 
-        <DatePicker
-            android:id="@+id/datePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="141dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_reminder_time" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select reminder time:" />
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="173dp"
+        android:layout_height="149dp"
+        android:timePickerMode="spinner" />
 
-        <TimePicker
-            android:id="@+id/timePicker"
-            android:layout_width="173dp"
-            android:layout_height="149dp"
-            android:timePickerMode="spinner" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_reminder_info" />
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter reminder info:" />
-
-        <EditText
+    <EditText
             android:id="@+id/reminder_info_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="reminder info" />
-
-        <Button
-            android:id="@+id/save_reminder_btn"
-            android:layout_width="wrap_content"
+            android:hint="@string/reminder_info"
+            android:inputType="textCapSentences"
+            android:lines="2"
+            android:maxLength="140"
+    />
+    <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save reminder" />
+            android:text="Enter reminder tag:" android:id="@+id/textView"/>
+    <EditText
+            android:id="@+id/reminder_tag_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="reminder tag"
+            android:inputType="textCapSentences"
+            android:lines="2"
+            android:maxLength="140"
+    />
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/save_reminder_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_reminder"
+        android:layout_gravity="center"
+        />
+
+</LinearLayout>
 </ScrollView>

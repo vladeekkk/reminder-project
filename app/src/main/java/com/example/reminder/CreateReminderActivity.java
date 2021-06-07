@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
@@ -34,6 +33,8 @@ public class CreateReminderActivity extends AppCompatActivity {
     private EditText reminderInfo;
     private Button saveReminderBtn;
     private Button modeBtn;
+
+    private EditText reminderTag;
 
     private TextView selectedDateText;
 
@@ -178,6 +179,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         });
 
         reminderInfo = findViewById(R.id.reminder_info_text);
+        reminderTag = findViewById(R.id.reminder_tag_text);
 
         timePicker = findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
@@ -209,7 +211,8 @@ public class CreateReminderActivity extends AppCompatActivity {
                         timePicker.getHour(),
                         timePicker.getMinute(),
                         mode[0],
-                        delta[0]);
+                        delta[0],
+                        reminderTag.getText().toString());
                 reminderService.save(reminder);
                 reminderNotifier.addReminder(reminder);
                 finish();

@@ -1,97 +1,121 @@
 package com.example.reminder;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.view.View;
-import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 import android.os.Bundle;
+import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class AllRemindersView extends AppCompatActivity {
-    public final static int REQUEST_CODE = 1;
 
     private ReminderServiceImpl reminderService;
-    private ArrayAdapter<String> adapter;
-    private ListView itemListView;
-    private ArrayAdapter<String> adapterAllInformation;
+    TabLayout tabLayout;
+
+    private class ViewStateAdapter extends FragmentStateAdapter {
+        ArrayList<ArrayList<String>> remindersByTag = new ArrayList<>();
+        ArrayList<ArrayList<String>> remindersByTagAllInfo = new ArrayList<>();
+
+        public ViewStateAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+            super(fragmentManager, lifecycle);
+            update();
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            return ListRemindersFragment.newInstance(remindersByTag.get(position), remindersByTagAllInfo.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return remindersByTag.size();
+        }
+
+        public void update() {
+            List<String> tabLayoutNames = reminderService.findAll().stream().map(Reminder::getTag).distinct().collect(Collectors.toList());
+            for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                if (!tabLayoutNames.contains(tabLayout.getTabAt(i).getText().toString())) {
+                    tabLayout.removeTab(tabLayout.getTabAt(i));
+                    i--;
+                }
+            }
+            for (String reminder : reminderService.findAll().stream().map(Reminder::getTag).distinct().collect(Collectors.toList())) {
+                boolean match = false;
+                for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                    if (tabLayout.getTabAt(i).getText().toString().equals(reminder)) {
+                        match = true;
+                    }
+                }
+                if (!match) {
+                    tabLayout.addTab(tabLayout.newTab().setText(reminder));
+                }
+            }
+            remindersByTag.clear();
+            remindersByTagAllInfo.clear();
+            remindersByTag = new ArrayList<>(tabLayout.getTabCount());
+            remindersByTagAllInfo = new ArrayList<>(tabLayout.getTabCount());
+            for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                List<Reminder> reminders = reminderService.findAll();
+                int finalI = i;
+                reminders.removeIf(r -> !r.getTag().contentEquals(tabLayout.getTabAt(finalI).getText()));
+                remindersByTag.add(new ArrayList<>(reminders.stream().map(Reminder::toString).collect(Collectors.toList())));
+                remindersByTagAllInfo.add(new ArrayList<>(reminders.stream().map(Reminder::getAllInformation).collect(Collectors.toList())));
+            }
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_window_of_all_reminders);
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
-
-        List<String> listOfReminders = reminderService.findAll()
-                .stream().map(Object::toString).collect(Collectors.toList());
-        List<String> listOfRemindersAllInformation = reminderService.findAll()
-                .stream().map(Reminder::getAllInformation).collect(Collectors.toList());
-
-        itemListView = findViewById(R.id.list);
-
-        adapter = new ArrayAdapter<>(
-                this,
-                R.layout.simple_list_item,
-                listOfReminders);
-
-        adapterAllInformation = new ArrayAdapter<>(
-                this,
-                R.layout.simple_list_item,
-                listOfRemindersAllInformation);
+        setContentView(R.layout.activity_window_of_all_reminders);
+        tabLayout = findViewById(R.id.tabLayout);
 
 
-        itemListView.setAdapter(adapter);
-        itemListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        ViewStateAdapter stateAdapter = new ViewStateAdapter(getSupportFragmentManager(), getLifecycle());
+        final ViewPager2 viewPager = findViewById(R.id.pager);
+        viewPager.setAdapter(stateAdapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View itemClicked, int position,
-                                           long id) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(AllRemindersView.this);
-                adb.setTitle("Delete");
-                adb.setMessage("Are you sure ?");
-                adb.setNegativeButton("Cancel", null);
-                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Reminder reminder = new Reminder(adapterAllInformation.getItem(position));
-                        reminderService.delete(reminder);
-                        adapter.remove(adapter.getItem(position));
-                        adapterAllInformation.remove(adapterAllInformation.getItem(position));
-                        adapter.notifyDataSetChanged();
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-                        ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
-                        reminderNotifier.init(getApplicationContext());
-                        reminderNotifier.deleteReminder(reminder);
-                    }
-                });
-                adb.show();
-                return true;
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                stateAdapter.update();
+                stateAdapter.notifyDataSetChanged();
+                System.out.println(stateAdapter.getItemCount());
+                if (stateAdapter.getItemCount() == 0) {
+                    tabLayout.removeTab(tab);
+                }
+                viewPager.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
-        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
-                                    long id) {
-                Intent intent = new Intent(AllRemindersView.this, ReminderUpdater.class);
-                intent.putExtra("clickedReminder", adapterAllInformation.getItem(position));
-                startActivityForResult(intent, REQUEST_CODE);
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        adapter.clear();
-        adapter.addAll(reminderService.findAll().stream().map(Object::toString).collect(Collectors.toList()));
-        adapter.notifyDataSetChanged();
-
-        adapterAllInformation.clear();
-        adapterAllInformation.addAll(reminderService.findAll().stream().map(Reminder::getAllInformation).collect(Collectors.toList()));
-        adapterAllInformation.notifyDataSetChanged();
     }
 }

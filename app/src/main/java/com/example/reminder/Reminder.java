@@ -17,6 +17,7 @@ public class Reminder {
     private final int minute;
     private final int mode;
     private final long delta;
+    private final String tag;
 
     public static final int SIMPLE_MODE = 0;
     public static final int PERIOD_MODE = 1;
@@ -70,7 +71,11 @@ public class Reminder {
         return delta;
     }
 
-    public Reminder(int id, String date, String comment, int hour, int minute, int mode, long delta) {
+    public String getTag() {
+        return tag;
+    }
+
+    public Reminder(int id, String date, String comment, int hour, int minute, int mode, long delta, String tag) {
         this.id = id;
         this.date = date;
         this.comment = comment;
@@ -78,6 +83,7 @@ public class Reminder {
         this.minute = minute;
         this.mode = mode;
         this.delta = delta;
+        this.tag = tag;
     }
 
     public Reminder(String allInformation) {
@@ -89,6 +95,7 @@ public class Reminder {
         this.minute = Integer.parseInt(allInformationSplited[4]);
         this.mode = Integer.parseInt(allInformationSplited[5]);
         this.delta = Long.parseLong(allInformationSplited[6]);
+        this.tag = allInformationSplited[7];
     }
 
     @Override
@@ -117,6 +124,6 @@ public class Reminder {
 
     public String getAllInformation() {
         return String.valueOf(id) + '\n' + date + '\n' + comment + '\n' +
-                hour + '\n' + minute + '\n' + mode + '\n' + delta;
+                hour + '\n' + minute + '\n' + mode + '\n' + delta + '\n' + tag;
     }
 }

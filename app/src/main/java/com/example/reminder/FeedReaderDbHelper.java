@@ -19,7 +19,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     FeedReaderContract.FeedEntry.HOUR + " INTEGER, " +
                     FeedReaderContract.FeedEntry.MINUTE + " INTEGER, " +
                     FeedReaderContract.FeedEntry.MODE + " INTEGER, " +
-                    FeedReaderContract.FeedEntry.DELTA + " LONG )";
+                    FeedReaderContract.FeedEntry.DELTA + " LONG, " +
+                    FeedReaderContract.FeedEntry.TAG + " TEXT )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FeedReaderContract.FeedEntry.TABLE_NAME;
