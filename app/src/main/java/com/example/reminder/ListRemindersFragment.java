@@ -32,7 +32,6 @@ public class ListRemindersFragment extends Fragment {
 
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ListRemindersFragment newInstance(ArrayList<String> info, ArrayList<String> allInfo) {
         ListRemindersFragment fragment = new ListRemindersFragment();
         Bundle args = new Bundle();
@@ -61,7 +60,6 @@ public class ListRemindersFragment extends Fragment {
 
         ListView lv = view.findViewById(R.id.listView2);
 
-        System.out.println(remindersToView);
         ArrayAdapter<String> lva = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_list_item_1, remindersToView);
         ArrayAdapter<String> lvaAllReminders = new ArrayAdapter<String>(
@@ -113,11 +111,12 @@ public class ListRemindersFragment extends Fragment {
                             lvaAllReminders.add(updateReminder.getAllInformation());
                             lvaAllReminders.remove(updateReminderBefore.getAllInformation());
                             lvaAllReminders.notifyDataSetChanged();
+
+                            lv.setAdapter(lva);
                         }
                     });
         });
         lv.setAdapter(lva);
-        lv.refreshDrawableState();
         return view;
     }
 

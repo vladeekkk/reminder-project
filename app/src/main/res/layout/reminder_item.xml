@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginVertical="12dp"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginVertical="12dp"
+              android:orientation="vertical" android:layout_gravity="center" android:gravity="center">
 
     <Button
-        android:id="@+id/all_reminders"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40dp"
-        android:text="@string/show_all_reminders"
-        android:textAllCaps="false" />
+            android:id="@+id/all_reminders"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginHorizontal="40dp"
+            android:text="@string/show_all_reminders"
+            android:textAllCaps="false" android:textSize="24sp" android:ellipsize="none"/>
 
     <Button
-        android:id="@+id/new_reminder_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40dp"
-        android:text="@string/create_new_reminder" />
+            android:id="@+id/new_reminder_btn"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginHorizontal="40dp"
+            android:text="@string/create_new_reminder" android:textSize="24sp"/>
 
 </LinearLayout>

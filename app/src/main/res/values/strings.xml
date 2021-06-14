@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Reminder</string>
     <string name="show_all_reminders">Show all Reminders</string>
-    <string name="create_new_reminder">Create new reminder</string>
+    <string name="create_new_reminder">Create new Reminder</string>
     <string name="selected_date">Selected Date :</string>
     <string name="select_date">Select Date</string>
     <string name="select_reminder_time">Select reminder time:</string>
