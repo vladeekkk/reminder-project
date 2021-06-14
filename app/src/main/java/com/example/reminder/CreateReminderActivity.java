@@ -99,7 +99,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         materialDatePicker.addOnPositiveButtonClickListener(
                 selection -> {
-                    selectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText());
+                    selectedDateText.setText("Selected Date :\n" + materialDatePicker.getHeaderText());
                     selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     selectedCalendar.setTimeInMillis((Long) selection);
                 });

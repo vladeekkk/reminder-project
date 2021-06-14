@@ -1,6 +1,7 @@
 package com.example.reminder;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,10 +39,11 @@ public class ReminderUpdater extends AppCompatActivity {
         timePicker = findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
         timePicker.setHour((int) clickedReminder.getHour());
+
         timePicker.setMinute((int) clickedReminder.getMinute());
 
         TextView selectedDateText = findViewById(R.id.show_selected_date);
-        selectedDateText.setText("Selected Date is : " + clickedReminder.getDate());
+        selectedDateText.setText("Selected Date :\n" + clickedReminder.getDate());
 
         Button pickDateBtn = findViewById(R.id.pick_date_button);
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
@@ -52,7 +54,7 @@ public class ReminderUpdater extends AppCompatActivity {
         selectedCalendar.set(Integer.parseInt(clickedReminder.getDate().split("\\.")[2]), Integer.parseInt(clickedReminder.getDate().split("\\.")[1]) - 1 /*look at 77*/, Integer.parseInt(clickedReminder.getDate().split("\\.")[0]));
         materialDatePicker.addOnPositiveButtonClickListener(
                 selection -> {
-                    selectedDateText.setText("Selected Date is : " + materialDatePicker.getHeaderText());
+                    selectedDateText.setText("Selected Date :\n" + materialDatePicker.getHeaderText());
                     selectedCalendar.setTimeInMillis((Long) selection);
                 });
 
@@ -86,7 +88,7 @@ public class ReminderUpdater extends AppCompatActivity {
 
             Intent returnIntent = new Intent();
             returnIntent.putExtra("reminder",
-                    clickedReminder.getId() + '\n' +
+                    String.valueOf(clickedReminder.getId()) + '\n' +
                             date + '\n' +
                             reminderInfo.getText().toString() + '\n' +
                             timePicker.getHour() + '\n' +
@@ -95,7 +97,7 @@ public class ReminderUpdater extends AppCompatActivity {
                             clickedReminder.getDelta() + '\n' +
                             reminderTag.getText().toString());
             returnIntent.putExtra("clickedReminder", getIntent().getStringExtra("clickedReminder"));
-            setResult(1, returnIntent);
+            setResult(Activity.RESULT_OK, returnIntent);
             finish();
         });
     }
