@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ListRemindersFragment extends Fragment {
@@ -26,6 +28,11 @@ public class ListRemindersFragment extends Fragment {
 
     private ArrayList<String> remindersToView;
     private ArrayList<String> remindersToInfo;
+    private boolean shouldRefreshOnResume;
+    private ListView lv;
+    private ArrayAdapter<String> lva;
+    private ArrayAdapter<String> lvaAllReminders;
+    private ReminderServiceImpl reminderService;
 
 
     public ListRemindersFragment() {
@@ -55,14 +62,15 @@ public class ListRemindersFragment extends Fragment {
                              Bundle savedInstanceState) {
         onCreate(savedInstanceState);
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getContext())));
-        ReminderServiceImpl reminderService = SingletonDataBaseService.getInstance().getDB();
+        reminderService = SingletonDataBaseService.getInstance().getDB();
+
         View view = inflater.inflate(R.layout.list_reminders, container, false);
 
-        ListView lv = view.findViewById(R.id.listView2);
+        lv = view.findViewById(R.id.listView2);
 
-        ArrayAdapter<String> lva = new ArrayAdapter<String>(
+        lva = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_list_item_1, remindersToView);
-        ArrayAdapter<String> lvaAllReminders = new ArrayAdapter<String>(
+        lvaAllReminders = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_list_item_1, remindersToInfo);
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -105,10 +113,14 @@ public class ListRemindersFragment extends Fragment {
                             Reminder updateReminder = new Reminder((String) result.getData().getExtras().getCharSequence("reminder"));
                             Reminder updateReminderBefore = new Reminder((String) result.getData().getExtras().getCharSequence("clickedReminder"));
                             lva.remove(updateReminderBefore.toString());
-                            lva.add(updateReminder.toString());
+                            if (updateReminder.getTag().equals(updateReminderBefore.getTag())) {
+                                lva.add(updateReminder.toString());
+                            }
                             lva.notifyDataSetChanged();
 
-                            lvaAllReminders.add(updateReminder.getAllInformation());
+                            if (updateReminder.getTag().equals(updateReminderBefore.getTag())) {
+                                lvaAllReminders.add(updateReminder.getAllInformation());
+                            }
                             lvaAllReminders.remove(updateReminderBefore.getAllInformation());
                             lvaAllReminders.notifyDataSetChanged();
 
@@ -118,6 +130,33 @@ public class ListRemindersFragment extends Fragment {
         });
         lv.setAdapter(lva);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldRefreshOnResume) {
+            if (remindersToInfo.size() > 0) {
+                SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getContext())));
+                reminderService = SingletonDataBaseService.getInstance().getDB();
+                List<Reminder> reminders = reminderService.findAll();
+                reminders.removeIf(r -> !r.getTag().contentEquals(new Reminder(remindersToInfo.get(0)).getTag()));
+                remindersToView = new ArrayList<>(reminders.stream().map(Reminder::toString).collect(Collectors.toList()));
+                remindersToInfo = new ArrayList<>(reminders.stream().map(Reminder::getAllInformation).collect(Collectors.toList()));
+
+                lva = new ArrayAdapter<String>(
+                        getActivity(), android.R.layout.simple_list_item_1, remindersToView);
+                lvaAllReminders = new ArrayAdapter<String>(
+                        getActivity(), android.R.layout.simple_list_item_1, remindersToInfo);
+                lv.setAdapter(lva);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        shouldRefreshOnResume = true;
     }
 
 }
