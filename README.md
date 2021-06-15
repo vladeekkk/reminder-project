@@ -13,7 +13,7 @@ Android приложение для планирования и создания
 * Созданные напоминания можно изменить/переместить/удалить
 
 <div align="center">
-  <img src="https://i.ibb.co/cyLfy3Z/Screenshot-20210614-184636-com-example-reminder.jpg" width="250px"</img>  &emsp; &emsp; <img src="https://i.ibb.co/t2w7TzV/Screenshot-20210614-185508-com-example-reminder.jpg" width="250px"</img> 
+  <img src="https://i.ibb.co/cyLfy3Z/Screenshot-20210614-184636-com-example-reminder.jpg" width="300px"</img>  &emsp; &emsp; <img src="https://i.ibb.co/t2w7TzV/Screenshot-20210614-185508-com-example-reminder.jpg" width="300px"</img> 
 </div>
 
 
