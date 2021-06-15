@@ -91,6 +91,7 @@ public class AllRemindersView extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                stateAdapter.update();
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -98,14 +99,6 @@ public class AllRemindersView extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 stateAdapter.update();
-                if (stateAdapter.getItemCount() == 0) {
-                    tabLayout.removeTab(tab);
-                }
-                viewPager.post(new Runnable() {
-                    public void run() {
-                        viewPager.getAdapter().notifyDataSetChanged();
-                    }
-                });
             }
 
             @Override
