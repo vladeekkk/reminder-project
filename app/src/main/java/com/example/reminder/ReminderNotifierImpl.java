@@ -56,10 +56,6 @@ public class ReminderNotifierImpl extends BroadcastReceiver implements ReminderN
         } else {
             reminderService.delete(reminder);
         }
-//        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        intent = new Intent(context, ReminderNotifierImpl.class);
-//        pendingIntent = PendingIntent.getBroadcast(context, 10000, intent, 0);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent);
     }
 
     @Override

@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
 import com.google.android.material.tabs.TabLayout;
 
 import android.os.Bundle;
+
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
@@ -81,6 +83,7 @@ public class AllRemindersView extends AppCompatActivity {
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
         setContentView(R.layout.activity_window_of_all_reminders);
+        setTitle("All reminders");
         tabLayout = findViewById(R.id.tabLayout);
 
 

@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
@@ -27,6 +29,7 @@ public class ReminderUpdater extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_reminder);
+        setTitle("Update reminder");
         ReminderServiceImpl reminderService = SingletonDataBaseService.getInstance().getDB();
         Reminder clickedReminder = new Reminder(getIntent().getStringExtra("clickedReminder"));
 
