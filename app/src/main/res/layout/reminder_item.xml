@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginVertical="12dp"
-              android:orientation="vertical" android:layout_gravity="center" android:gravity="center">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_marginVertical="12dp"
+    android:orientation="vertical">
 
     <Button
-            android:id="@+id/all_reminders"
-            android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:layout_marginHorizontal="40dp"
-            android:text="@string/show_all_reminders"
-            android:textAllCaps="false" android:textSize="24sp" android:ellipsize="none"/>
+        android:id="@+id/all_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:layout_marginHorizontal="40dp"
+        android:ellipsize="none"
+        android:text="@string/show_all_reminders"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
 
     <Button
-            android:id="@+id/new_reminder_btn"
+        android:id="@+id/new_reminder_btn"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:layout_marginHorizontal="40dp"
+        android:text="@string/create_new_reminder"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/update_pass_btn"
             android:layout_width="match_parent"
-            android:layout_height="74dp"
+            android:layout_height="56dp"
             android:layout_marginHorizontal="40dp"
-            android:text="@string/create_new_reminder" android:textSize="24sp"/>
+            android:text="Update the password"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="40dp"
+            android:text="Log out"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

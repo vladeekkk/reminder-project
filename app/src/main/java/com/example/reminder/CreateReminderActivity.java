@@ -82,6 +82,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         reminderService = SingletonDataBaseService.getInstance().getDB();
 
         setContentView(R.layout.activity_create_reminder);
+        setTitle("Create reminder");
         setupUI(findViewById(R.id.layout));
 
         ReminderNotifier reminderNotifier = new ReminderNotifierImpl();

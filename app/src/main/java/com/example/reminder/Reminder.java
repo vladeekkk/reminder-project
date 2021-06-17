@@ -124,6 +124,6 @@ public class Reminder {
 
     public String getAllInformation() {
         return String.valueOf(id) + '\n' + date + '\n' + comment + '\n' +
-                hour + '\n' + minute + '\n' + mode + '\n' + delta + '\n' + tag;
+                hour + '\n' + minute + '\n' + mode + '\n' + delta + '\n' + tag + ' ';
     }
 }
