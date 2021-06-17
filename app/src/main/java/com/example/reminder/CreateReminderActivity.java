@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +30,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
     private final String TIME_STRING = "time";
     private final String DATE_STRING = "date";
+    private final String TIMEZONE = "UTC";
 
     private EditText reminderInfo;
     private Button saveReminderBtn;
@@ -76,14 +78,24 @@ public class CreateReminderActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
 
         setContentView(R.layout.activity_create_reminder);
-        setTitle("Create reminder");
+        final String REM_CREATE = "Create reminder";
+        setTitle(REM_CREATE);
         setupUI(findViewById(R.id.layout));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
         reminderNotifier.init(getApplicationContext());
@@ -92,7 +104,8 @@ public class CreateReminderActivity extends AppCompatActivity {
         Button pickDateBtn = findViewById(R.id.pick_date_button);
 
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
-        materialDateBuilder.setTitleText("SELECT A DATE");
+        String SELECT_DATE = "SELECT A DATE";
+        materialDateBuilder.setTitleText(SELECT_DATE);
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
 
         pickDateBtn.setOnClickListener(v -> materialDatePicker.show(getSupportFragmentManager(),
@@ -101,7 +114,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         materialDatePicker.addOnPositiveButtonClickListener(
                 selection -> {
                     selectedDateText.setText("Selected Date :\n" + materialDatePicker.getHeaderText());
-                    selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    selectedCalendar = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE));
                     selectedCalendar.setTimeInMillis((Long) selection);
                 });
 
@@ -122,58 +135,60 @@ public class CreateReminderActivity extends AppCompatActivity {
                 menuMode.inflate(R.layout.mode_menu);
 
                 menuMode
-                        .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.menu_simple:
-                                        Toast.makeText(getApplicationContext(),
-                                                "You chose Simple reminder",
-                                                Toast.LENGTH_SHORT).show();
-                                        textView.setText("Mode: Simple reminder");
-                                        mode[0] = Reminder.SIMPLE_MODE;
-                                        return true;
-                                    case R.id.menu_spaced_repetition:
-                                        Toast.makeText(getApplicationContext(),
-                                                "You chose Spaced repetition reminder",
-                                                Toast.LENGTH_SHORT).show();
-                                        textView.setText("Mode: Spaced repetition reminder");
-                                        mode[0] = Reminder.EXP_MODE;
-                                        return true;
-                                    case R.id.submenu_day:
-                                        Toast.makeText(getApplicationContext(),
-                                                "You chose Repeated reminder(every day)",
-                                                Toast.LENGTH_SHORT).show();
-                                        textView.setText("Mode: Repeated reminder(every day)");
-                                        mode[0] = Reminder.PERIOD_MODE;
-                                        delta[0] = DateUtils.DAY_IN_MILLIS;
-                                        return true;
-                                    case R.id.submenu_week:
-                                        Toast.makeText(getApplicationContext(),
-                                                "You chose Repeated reminder(every week)",
-                                                Toast.LENGTH_SHORT).show();
-                                        textView.setText("Mode: Repeated reminder(every week)");
-                                        mode[0] = Reminder.PERIOD_MODE;
-                                        delta[0] = DateUtils.WEEK_IN_MILLIS;
-                                        return true;
-                                    case R.id.submenu_minute:
-                                        Toast.makeText(getApplicationContext(),
-                                                "You chose Repeated reminder(every minute)",
-                                                Toast.LENGTH_SHORT).show();
-                                        textView.setText("Mode: Repeated reminder(every minute)");
-                                        mode[0] = Reminder.PERIOD_MODE;
-                                        delta[0] = DateUtils.MINUTE_IN_MILLIS;
-                                        return true;
-                                    default:
-                                        return false;
-                                }
+                        .setOnMenuItemClickListener(item -> {
+                            final String CHOOSE_STR = "You chose ";
+                            final String MODE_STR = "Mode: ";
+                            final String SIMPLE_REMINDER = "Simple reminder";
+                            final String SPACED_REMINDER = "Spaced repetition reminder";
+                            final String DAILY_REMINDER = "Repeated reminder(every day)";
+                            final String WEEKLY_REMINDER = "Repeated reminder(every week)";
+                            final String MINUTE_REMINDER = "Repeated reminder(every minute)";
+
+                            switch (item.getItemId()) {
+                                case R.id.menu_simple:
+                                    Toast.makeText(getApplicationContext(),
+                                            CHOOSE_STR + SIMPLE_REMINDER,
+                                            Toast.LENGTH_SHORT).show();
+                                    textView.setText(MODE_STR + SIMPLE_REMINDER);
+                                    mode[0] = Reminder.SIMPLE_MODE;
+                                    return true;
+                                case R.id.menu_spaced_repetition:
+                                    Toast.makeText(getApplicationContext(),
+                                            CHOOSE_STR + SPACED_REMINDER,
+                                            Toast.LENGTH_SHORT).show();
+                                    textView.setText(MODE_STR + SPACED_REMINDER);
+                                    mode[0] = Reminder.EXP_MODE;
+                                    return true;
+                                case R.id.submenu_day:
+                                    Toast.makeText(getApplicationContext(),
+                                            CHOOSE_STR + DAILY_REMINDER,
+                                            Toast.LENGTH_SHORT).show();
+                                    textView.setText(MODE_STR + DAILY_REMINDER);
+                                    mode[0] = Reminder.PERIOD_MODE;
+                                    delta[0] = DateUtils.DAY_IN_MILLIS;
+                                    return true;
+                                case R.id.submenu_week:
+                                    Toast.makeText(getApplicationContext(),
+                                            CHOOSE_STR + WEEKLY_REMINDER,
+                                            Toast.LENGTH_SHORT).show();
+                                    textView.setText(MODE_STR + WEEKLY_REMINDER);
+                                    mode[0] = Reminder.PERIOD_MODE;
+                                    delta[0] = DateUtils.WEEK_IN_MILLIS;
+                                    return true;
+                                case R.id.submenu_minute:
+                                    Toast.makeText(getApplicationContext(),
+                                            CHOOSE_STR + MINUTE_REMINDER,
+                                            Toast.LENGTH_SHORT).show();
+                                    textView.setText(MODE_STR + MINUTE_REMINDER);
+                                    mode[0] = Reminder.PERIOD_MODE;
+                                    delta[0] = DateUtils.MINUTE_IN_MILLIS;
+                                    return true;
+                                default:
+                                    return false;
                             }
                         });
-                menuMode.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    @Override
-                    public void onDismiss(PopupMenu menu) {
-                        return;
-                    }
+                menuMode.setOnDismissListener(menu -> {
+                    return;
                 });
                 menuMode.show();
             }
@@ -254,5 +269,21 @@ public class CreateReminderActivity extends AppCompatActivity {
         return calendarCurrent.get(Calendar.HOUR_OF_DAY) > timePicker.getHour() ||
                 (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
                         calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }

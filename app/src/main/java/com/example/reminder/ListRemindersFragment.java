@@ -2,13 +2,13 @@ package com.example.reminder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
@@ -29,14 +29,13 @@ public class ListRemindersFragment extends Fragment {
     private ArrayList<String> remindersToView;
     private ArrayList<String> remindersToInfo;
     private boolean shouldRefreshOnResume;
-    private ListView lv;
-    private ArrayAdapter<String> lva;
+    private ListView listView;
+    private ArrayAdapter<String> listViewAdapter;
     private ArrayAdapter<String> lvaAllReminders;
     private ReminderServiceImpl reminderService;
 
 
     public ListRemindersFragment() {
-
     }
 
     public static ListRemindersFragment newInstance(ArrayList<String> info, ArrayList<String> allInfo) {
@@ -66,38 +65,33 @@ public class ListRemindersFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.list_reminders, container, false);
 
-        lv = view.findViewById(R.id.listView2);
+        listView = view.findViewById(R.id.listView2);
 
-        lva = new ArrayAdapter<String>(
+        listViewAdapter = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_list_item_1, remindersToView);
-        lvaAllReminders = new ArrayAdapter<String>(
+        lvaAllReminders = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_list_item_1, remindersToInfo);
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View itemClicked, int position,
-                                           long id) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-                adb.setTitle("Delete");
-                adb.setMessage("Are you sure ?");
-                adb.setNegativeButton("Cancel", null);
-                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Reminder reminder = new Reminder(lvaAllReminders.getItem(position));
-                        reminderService.delete(reminder);
-                        lva.remove(lva.getItem(position));
-                        lvaAllReminders.remove(lvaAllReminders.getItem(position));
-                        lva.notifyDataSetChanged();
+        listView.setOnItemLongClickListener((parent, itemClicked, position, id) -> {
+            AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+            adb.setTitle("Delete");
+            adb.setMessage("Are you sure ?");
+            adb.setNegativeButton("Cancel", null);
 
-                        ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
-                        reminderNotifier.init(getContext());
-                        reminderNotifier.deleteReminder(reminder);
-                    }
-                });
-                adb.show();
-                return true;
-            }
+            adb.setPositiveButton("Ok", (dialog, which) -> {
+                Reminder reminder = new Reminder(lvaAllReminders.getItem(position));
+                reminderService.delete(reminder);
+                listViewAdapter.remove(listViewAdapter.getItem(position));
+                lvaAllReminders.remove(lvaAllReminders.getItem(position));
+                listViewAdapter.notifyDataSetChanged();
+
+                ReminderNotifier reminderNotifier = new ReminderNotifierImpl();
+                reminderNotifier.init(getContext());
+                reminderNotifier.deleteReminder(reminder);
+            });
+            adb.show();
+            return true;
         });
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
@@ -112,11 +106,11 @@ public class ListRemindersFragment extends Fragment {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Reminder updateReminder = new Reminder((String) result.getData().getExtras().getCharSequence("reminder"));
                             Reminder updateReminderBefore = new Reminder((String) result.getData().getExtras().getCharSequence("clickedReminder"));
-                            lva.remove(updateReminderBefore.toString());
+                            listViewAdapter.remove(updateReminderBefore.toString());
                             if (updateReminder.getTag().equals(updateReminderBefore.getTag())) {
-                                lva.add(updateReminder.toString());
+                                listViewAdapter.add(updateReminder.toString());
                             }
-                            lva.notifyDataSetChanged();
+                            listViewAdapter.notifyDataSetChanged();
 
                             if (updateReminder.getTag().equals(updateReminderBefore.getTag())) {
                                 lvaAllReminders.add(updateReminder.getAllInformation());
@@ -124,11 +118,11 @@ public class ListRemindersFragment extends Fragment {
                             lvaAllReminders.remove(updateReminderBefore.getAllInformation());
                             lvaAllReminders.notifyDataSetChanged();
 
-                            lv.setAdapter(lva);
+                            listView.setAdapter(listViewAdapter);
                         }
                     });
         });
-        lv.setAdapter(lva);
+        listView.setAdapter(listViewAdapter);
         return view;
     }
 
@@ -144,11 +138,11 @@ public class ListRemindersFragment extends Fragment {
                 remindersToView = new ArrayList<>(reminders.stream().map(Reminder::toString).collect(Collectors.toList()));
                 remindersToInfo = new ArrayList<>(reminders.stream().map(Reminder::getAllInformation).collect(Collectors.toList()));
 
-                lva = new ArrayAdapter<String>(
+                listViewAdapter = new ArrayAdapter<>(
                         getActivity(), android.R.layout.simple_list_item_1, remindersToView);
-                lvaAllReminders = new ArrayAdapter<String>(
+                lvaAllReminders = new ArrayAdapter<>(
                         getActivity(), android.R.layout.simple_list_item_1, remindersToInfo);
-                lv.setAdapter(lva);
+                listView.setAdapter(listViewAdapter);
             }
         }
     }
