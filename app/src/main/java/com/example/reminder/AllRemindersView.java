@@ -81,23 +81,13 @@ public class AllRemindersView extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void createInstance() {
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
         setContentView(R.layout.activity_window_of_all_reminders);
         setTitle("All reminders");
         tabLayout = findViewById(R.id.tabLayout);
 
-        final Dialog dialog = new Dialog(AllRemindersView.this);
-        dialog.setContentView(R.layout.dialog_custom);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-
-        TimePicker timePicker = findViewById(R.id.time_picker);
-        timePicker.setIs24HourView(true);
 
 
         ViewStateAdapter stateAdapter = new ViewStateAdapter(getSupportFragmentManager(), getLifecycle());
@@ -129,5 +119,18 @@ public class AllRemindersView extends AppCompatActivity {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        createInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        createInstance();
     }
 }
