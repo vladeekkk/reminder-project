@@ -16,7 +16,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class UpdateReminderActivity extends AppCompatActivity {
+public class ReminderUpdater extends AppCompatActivity {
     private final String TIME_STRING = "time";
     private final String DATE_STRING = "date";
 
@@ -110,7 +110,7 @@ public class UpdateReminderActivity extends AppCompatActivity {
     }
 
     private void sendAlert(String errorType) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(UpdateReminderActivity.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(ReminderUpdater.this);
         if (errorType.equals(DATE_STRING) || errorType.equals(TIME_STRING)) {
             adb.setTitle("Invalid " + errorType);
             adb.setMessage("You are trying to set the " + errorType + " that has already passed");

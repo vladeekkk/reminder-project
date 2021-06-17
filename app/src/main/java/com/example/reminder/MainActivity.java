@@ -36,16 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button addNewReminderBtn;
-    private Button showReminders;
 
     private ReminderNotifier reminderNotifier;
     private ReminderService reminderService;
 
     private FirebaseAuth auth;
     private FirebaseDatabase database;
-    private Button logoutBtn;
-    private Button updatePass;
 
     @Override
     protected void onStart() {
@@ -63,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.reminder_item);
 
-        logoutBtn = findViewById(R.id.logout_btn);
-        updatePass = findViewById(R.id.update_pass_btn);
+        Button logoutBtn = findViewById(R.id.logout_btn);
+        Button updatePass = findViewById(R.id.update_pass_btn);
 
         reminderService = new ReminderServiceImpl(new ReminderDAOImpl(this));
         logoutBtn.setOnClickListener(v -> {
@@ -97,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reminderNotifier.init(getApplicationContext());
 
 
-        addNewReminderBtn = findViewById(R.id.new_reminder_btn);
-        showReminders = findViewById(R.id.all_reminders);
+        Button addNewReminderBtn = findViewById(R.id.new_reminder_btn);
+        Button showReminders = findViewById(R.id.all_reminders);
 
         showReminders.setOnClickListener(this);
         addNewReminderBtn.setOnClickListener(this);
@@ -119,13 +115,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // examle of pushing a notification
-//        PushReminderImpl reminderPusher = new PushReminderImpl(this);
-//        reminderPusher.push(new Reminder(0, "03.11.2001", "homework",1,1));
     }
 }
