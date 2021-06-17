@@ -8,8 +8,13 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TimePicker;
 
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -76,15 +81,13 @@ public class AllRemindersView extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void createInstance() {
         SingletonDataBaseService.getInstance().setValue(new ReminderServiceImpl(new ReminderDAOImpl(getApplicationContext())));
         reminderService = SingletonDataBaseService.getInstance().getDB();
         setContentView(R.layout.activity_window_of_all_reminders);
         setTitle("All reminders");
         tabLayout = findViewById(R.id.tabLayout);
+
 
 
         ViewStateAdapter stateAdapter = new ViewStateAdapter(getSupportFragmentManager(), getLifecycle());
@@ -116,5 +119,18 @@ public class AllRemindersView extends AppCompatActivity {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        createInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        createInstance();
     }
 }
