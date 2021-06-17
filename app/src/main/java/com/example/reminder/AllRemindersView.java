@@ -8,8 +8,13 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TimePicker;
 
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -85,6 +90,14 @@ public class AllRemindersView extends AppCompatActivity {
         setContentView(R.layout.activity_window_of_all_reminders);
         setTitle("All reminders");
         tabLayout = findViewById(R.id.tabLayout);
+
+        final Dialog dialog = new Dialog(AllRemindersView.this);
+        dialog.setContentView(R.layout.dialog_custom);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
+        TimePicker timePicker = findViewById(R.id.time_picker);
+        timePicker.setIs24HourView(true);
 
 
         ViewStateAdapter stateAdapter = new ViewStateAdapter(getSupportFragmentManager(), getLifecycle());
