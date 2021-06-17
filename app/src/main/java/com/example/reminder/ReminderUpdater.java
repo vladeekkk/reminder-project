@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class ReminderUpdater extends AppCompatActivity {
+public class UpdateReminderActivity extends AppCompatActivity {
     private final String TIME_STRING = "time";
     private final String DATE_STRING = "date";
 
@@ -32,6 +34,8 @@ public class ReminderUpdater extends AppCompatActivity {
         setTitle("Update reminder");
         ReminderServiceImpl reminderService = SingletonDataBaseService.getInstance().getDB();
         Reminder clickedReminder = new Reminder(getIntent().getStringExtra("clickedReminder"));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         reminderInfo = findViewById(R.id.reminder_info_text);
         reminderInfo.setText(clickedReminder.getComment(), TextView.BufferType.EDITABLE);
@@ -106,7 +110,7 @@ public class ReminderUpdater extends AppCompatActivity {
     }
 
     private void sendAlert(String errorType) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(ReminderUpdater.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(UpdateReminderActivity.this);
         if (errorType.equals(DATE_STRING) || errorType.equals(TIME_STRING)) {
             adb.setTitle("Invalid " + errorType);
             adb.setMessage("You are trying to set the " + errorType + " that has already passed");
@@ -137,5 +141,28 @@ public class ReminderUpdater extends AppCompatActivity {
                 (calendarCurrent.get(Calendar.HOUR_OF_DAY) == timePicker.getHour() &&
                         calendarCurrent.get(Calendar.MINUTE) >= timePicker.getMinute());
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
 }
 
